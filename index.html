@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WildDex v9</title>
+<title>WildDex v9 Fixed</title>
 <style>
 body{font-family:Arial;margin:0;background:linear-gradient(135deg,#b7e4d7,#d7f2ff);}
 .tabs{display:flex;background:#2c3e50;color:white;}
@@ -189,8 +189,11 @@ function renderCollection(){
   animals.forEach((a,i)=>{
     const card=document.createElement("div");
     card.className="card "+a.type+" "+a.rarity+(a.shiny?" shiny":"");
-    card.innerHTML=`<div class="card-header"><span>${a.name}</span><span>HP ${a.atk+a.def}</span></div>
-      ${a.image ? `<img src="${a.image}" alt="${a.name}" onerror="this.style.display='none';">` : `<div style="font-size:80px;text-align:center;height:160px;line-height:160px;">🖤</div>`}
+    card.innerHTML=`
+      <div class="card-header"><span>${a.name}</span><span>HP ${a.atk+a.def}</span></div>
+      <div style="width:100%;height:160px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:white;border-bottom:2px solid rgba(0,0,0,0.1);">
+        ${a.image ? `<img src="${a.image}" alt="${a.name}" style="width:100%;height:160px;object-fit:cover;" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;font-size:80px;text-align:center;height:160px;line-height:160px;&quot;>🖤</div>'">` : `<div style="font-size:80px;text-align:center;height:160px;line-height:160px;">🖤</div>`}
+      </div>
       <div class="card-body">
         <div class="card-overlay"></div>
         <div><b>${a.move}</b></div>
@@ -199,7 +202,8 @@ function renderCollection(){
           <span>${typeIcons[a.type]} ${a.type}</span>
           <span>${continentIcons[a.continent]} ${a.continent}</span>
         </div>
-      </div>`;
+      </div>
+    `;
     card.onclick=()=>openModal(i);
     grid.appendChild(card);
   });
