@@ -65,4 +65,100 @@ button{padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color:
 
 /* GRASS realistic leaves */
 .card.grass::before{
-  background-image:url('data:image
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="4" fill="rgba(255,255,255,0.3)"/></svg>');
+  background-size:20px 20px;animation:grassFloat 5s linear infinite;
+}
+@keyframes grassFloat{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
+
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" onclick="showSection('collection')">Collection</div>
+  <div class="tab" onclick="showSection('badges')">Badges</div>
+</div>
+
+<div id="collection" class="section active">
+  <input id="search" placeholder="Search animals..." oninput="autocomplete(this.value)">
+  <div class="autocomplete-suggestions" id="suggestions"></div>
+  <div class="collection" id="animalCollection"></div>
+</div>
+
+<div id="badges" class="section">
+  <div class="badges" id="badgeCollection"></div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <img id="modalImg">
+    <h3 id="modalName"></h3>
+    <p id="modalDesc"></p>
+  </div>
+</div>
+
+<script>
+// Tabs
+function showSection(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// Example animal data
+const animals=[
+  {name:"Tiger",type:"fire",rarity:"rare",img:"https://placekitten.com/300/160",desc:"Powerful predator."},
+  {name:"Dolphin",type:"water",rarity:"epic",img:"https://placekitten.com/301/160",desc:"Intelligent marine mammal."},
+  {name:"Elephant",type:"normal",rarity:"legendary",img:"https://placekitten.com/302/160",desc:"Giant land mammal."},
+  {name:"Parrot",type:"flying",rarity:"rare",img:"https://placekitten.com/303/160",desc:"Colorful bird."}
+];
+
+// Render cards
+function renderCollection(list){
+  const container=document.getElementById('animalCollection');
+  container.innerHTML='';
+  list.forEach(a=>{
+    const card=document.createElement('div');
+    card.className=`card ${a.type} ${a.rarity}`;
+    card.innerHTML=`
+      <img src="${a.img}">
+      <div class="card-header">${a.name}</div>
+      <div class="card-body">${a.desc}</div>
+    `;
+    card.onclick=()=>openModal(a);
+    container.appendChild(card);
+  });
+}
+
+// Modal
+function openModal(animal){
+  document.getElementById('modal').style.display='flex';
+  document.getElementById('modalImg').src=animal.img;
+  document.getElementById('modalName').innerText=animal.name;
+  document.getElementById('modalDesc').innerText=animal.desc;
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+
+// Autocomplete
+function autocomplete(query){
+  const suggestions=document.getElementById('suggestions');
+  suggestions.innerHTML='';
+  if(!query)return;
+  animals.filter(a=>a.name.toLowerCase().includes(query.toLowerCase()))
+    .forEach(a=>{
+      const div=document.createElement('div');
+      div.className='autocomplete-suggestion';
+      div.innerText=a.name;
+      div.onclick=()=>{document.getElementById('search').value=a.name;suggestions.innerHTML='';renderCollection([a]);};
+      suggestions.appendChild(div);
+    });
+}
+
+// Initialize
+renderCollection(animals);
+</script>
+
+</body>
+</html>
