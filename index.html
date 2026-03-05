@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WildDex v9</title>
+<title>WildDex v10</title>
 <style>
 body {font-family:Arial;margin:0;background:linear-gradient(135deg,#b7e4d7,#d7f2ff);}
 .tabs {display:flex;background:#2c3e50;color:white;}
@@ -30,7 +30,7 @@ button {padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color
 .autocomplete-suggestion{padding:5px;cursor:pointer;}
 .autocomplete-suggestion:hover{background:#eee;}
 
-/* --- Element background gradients --- */
+/* Element gradients */
 .fire{background:linear-gradient(135deg,#ff7b4b,#ffcc5c);}
 .water{background:linear-gradient(135deg,#4facfe,#00f2fe);}
 .grass{background:linear-gradient(135deg,#43e97b,#38f9d7);}
@@ -38,37 +38,42 @@ button {padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color
 .flying{background:linear-gradient(135deg,#89f7fe,#66a6ff);}
 .normal{background:linear-gradient(135deg,#bdbdbd,#e0e0e0);}
 
-/* --- Rarity glow on card --- */
+/* Rarity glows */
 .card.rare {box-shadow:0 0 10px silver,0 10px 30px rgba(0,0,0,.25);}
 .card.epic {box-shadow:0 0 15px purple,0 10px 30px rgba(0,0,0,.25);}
 .card.legendary {box-shadow:0 0 20px gold,0 10px 30px rgba(0,0,0,.25);}
 
-/* --- Element margin pattern --- */
+/* Element border effects */
 .card::before {
   content:"";
-  position:absolute;
-  top:0; left:0; width:100%; height:100%;
-  border-radius:18px;
-  pointer-events:none;
-  box-sizing:border-box;
-  border:6px solid transparent;
+  position:absolute;top:0;left:0;width:100%;height:100%;border-radius:18px;
+  pointer-events:none;box-sizing:border-box;border:6px solid transparent;
 }
-.card.fire::before{border-image: repeating-linear-gradient(45deg,#ff7b4b 0 4px,#ffcc5c 0 8px) 6;}
-.card.water::before{border-image: repeating-linear-gradient(0deg,#4facfe 0 4px,#00f2fe 0 8px) 6;}
-.card.grass::before{border-image: repeating-linear-gradient(45deg,#43e97b 0 4px,#38f9d7 0 8px) 6;}
-.card.ice::before{border-image: repeating-linear-gradient(135deg,#7de2fc 0 4px,#b9b6e5 0 8px) 6;}
-.card.flying::before{border-image: repeating-linear-gradient(90deg,#89f7fe 0 4px,#66a6ff 0 8px) 6;}
-.card.normal::before{border-image: repeating-linear-gradient(45deg,#bdbdbd 0 4px,#e0e0e0 0 8px) 6;}
+
+@keyframes fireFlicker {0%{box-shadow:0 0 5px #ff7b4b;}50%{box-shadow:0 0 15px #ffcc5c;}100%{box-shadow:0 0 5px #ff7b4b;}}
+@keyframes waterBubbles {0%{background-position:0 0;}100%{background-position:100% 0;}}
+@keyframes grassWave {0%{transform:translateY(0);}50%{transform:translateY(3px);}100%{transform:translateY(0);}}
+@keyframes iceDrift {0%{background-position:0 0;}100%{background-position:0 20px;}}
+@keyframes flyingWind {0%{background-position:0 0;}100%{background-position:50% 0;}}
+
+/* Fire flicker */
+.card.fire::before {border-image:none; animation:fireFlicker 2s infinite alternate; box-shadow:inset 0 0 10px rgba(255,120,75,0.5);}
+.card.water::before {border-image:none; animation:waterBubbles 4s linear infinite; background:repeating-radial-gradient(circle,rgba(255,255,255,0.3) 0 2px,transparent 2px 6px); }
+.card.grass::before {border-image:none; animation:grassWave 3s ease-in-out infinite; background:repeating-linear-gradient(45deg,rgba(0,0,0,0.05) 0 4px,transparent 4px 8px);}
+.card.ice::before {border-image:none; animation:iceDrift 5s linear infinite; background:repeating-linear-gradient(135deg,rgba(255,255,255,0.3) 0 4px,transparent 4px 8px);}
+.card.flying::before {border-image:none; animation:flyingWind 3s linear infinite; background:repeating-linear-gradient(90deg,rgba(255,255,255,0.2) 0 4px,transparent 4px 8px);}
+.card.normal::before {border:none;}
 </style>
 </head>
 <body>
-
+<!-- Tabs -->
 <div class="tabs">
   <div class="tab active" onclick="openTab('log', event)">Log Animal</div>
   <div class="tab" onclick="openTab('collection', event)">Collection</div>
   <div class="tab" onclick="openTab('badges', event)">Badges</div>
 </div>
 
+<!-- Sections -->
 <div id="log" class="section active">
   <h2>Log an Animal</h2>
   <div style="position:relative;">
@@ -88,6 +93,7 @@ button {padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color
   <div id="badgeContainer" class="badges"></div>
 </div>
 
+<!-- Modal -->
 <div id="modal" class="modal">
   <div class="modal-content">
     <span class="modal-close" onclick="closeModal()">✖</span>
@@ -97,148 +103,87 @@ button {padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color
 </div>
 
 <script>
-// --- Database ---
+// Database
 const animalDatabase = [
-  {name:"African Lion", scientific:"Panthera leo", type:"fire", continent:"Africa", image:"https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg"},
-  {name:"Tiger", scientific:"Panthera tigris", type:"fire", continent:"Asia", image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg"},
-  {name:"Elephant", scientific:"Loxodonta africana", type:"grass", continent:"Africa", image:"https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg"},
-  {name:"Giraffe", scientific:"Giraffa camelopardalis", type:"grass", continent:"Africa", image:"https://upload.wikimedia.org/wikipedia/commons/9/9f/Giraffa_camelopardalis_angolensis.jpg"},
-  {name:"Zebra", scientific:"Equus quagga", type:"grass", continent:"Africa", image:"https://upload.wikimedia.org/wikipedia/commons/0/0f/Plains_Zebra_Equus_quagga.jpg"},
-  {name:"Blue Whale", scientific:"Balaenoptera musculus", type:"water", continent:"Ocean", image:"https://upload.wikimedia.org/wikipedia/commons/5/53/Bluewhale2.jpg"},
-  {name:"Dolphin", scientific:"Delphinus delphis", type:"water", continent:"Ocean", image:"https://upload.wikimedia.org/wikipedia/commons/6/63/Common_dolphin_2.jpg"},
-  {name:"Penguin", scientific:"Aptenodytes forsteri", type:"ice", continent:"Antarctica", image:"https://upload.wikimedia.org/wikipedia/commons/e/e0/Emperor_Penguin_Manchot_empereur.jpg"},
-  {name:"Bald Eagle", scientific:"Haliaeetus leucocephalus", type:"flying", continent:"North America", image:"https://upload.wikimedia.org/wikipedia/commons/1/14/Bald_Eagle_Portrait.jpg"},
-  {name:"Polar Bear", scientific:"Ursus maritimus", type:"ice", continent:"Arctic", image:"https://upload.wikimedia.org/wikipedia/commons/e/e6/Polar_Bear_AdF.jpg"},
-  {name:"European Lynx", scientific:"Lynx lynx", type:"normal", continent:"Europe", image:"https://upload.wikimedia.org/wikipedia/commons/5/50/Lynx_lynx_Luc_Viatour.jpg"},
-  {name:"Green Finch", scientific:"Chloris chloris", type:"flying", continent:"Europe", image:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Chloris_chloris01.jpg"}
+{name:"African Lion",scientific:"Panthera leo",type:"fire",continent:"Africa",image:"https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg"},
+{name:"Tiger",scientific:"Panthera tigris",type:"fire",continent:"Asia",image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg"},
+{name:"Elephant",scientific:"Loxodonta africana",type:"grass",continent:"Africa",image:"https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg"},
+{name:"Giraffe",scientific:"Giraffa camelopardalis",type:"grass",continent:"Africa",image:"https://upload.wikimedia.org/wikipedia/commons/9/9f/Giraffa_camelopardalis_angolensis.jpg"},
+{name:"Zebra",scientific:"Equus quagga",type:"grass",continent:"Africa",image:"https://upload.wikimedia.org/wikipedia/commons/0/0f/Plains_Zebra_Equus_quagga.jpg"},
+{name:"Blue Whale",scientific:"Balaenoptera musculus",type:"water",continent:"Ocean",image:"https://upload.wikimedia.org/wikipedia/commons/5/53/Bluewhale2.jpg"},
+{name:"Dolphin",scientific:"Delphinus delphis",type:"water",continent:"Ocean",image:"https://upload.wikimedia.org/wikipedia/commons/6/63/Common_dolphin_2.jpg"},
+{name:"Penguin",scientific:"Aptenodytes forsteri",type:"ice",continent:"Antarctica",image:"https://upload.wikimedia.org/wikipedia/commons/e/e0/Emperor_Penguin_Manchot_empereur.jpg"},
+{name:"Bald Eagle",scientific:"Haliaeetus leucocephalus",type:"flying",continent:"North America",image:"https://upload.wikimedia.org/wikipedia/commons/1/14/Bald_Eagle_Portrait.jpg"},
+{name:"Polar Bear",scientific:"Ursus maritimus",type:"ice",continent:"Arctic",image:"https://upload.wikimedia.org/wikipedia/commons/e/e6/Polar_Bear_AdF.jpg"},
+{name:"European Lynx",scientific:"Lynx lynx",type:"normal",continent:"Europe",image:"https://upload.wikimedia.org/wikipedia/commons/5/50/Lynx_lynx_Luc_Viatour.jpg"},
+{name:"Green Finch",scientific:"Chloris chloris",type:"flying",continent:"Europe",image:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Chloris_chloris01.jpg"}
 ];
 
-// --- Symbols ---
+// Symbols
 const typeIcons = {fire:"🔥",water:"💧",grass:"🌿",ice:"❄️",flying:"🕊️",normal:"⚪"};
 const continentIcons = {Africa:"🌍",Asia:"🌏",Europe:"🌍","North America":"🌎","South America":"🌎",Australia:"🌏",Antarctica:"❄️",Ocean:"🌊",Arctic:"❄️"};
 
-// --- Data ---
-let animals = JSON.parse(localStorage.getItem("wilddex")) || [];
+let animals = JSON.parse(localStorage.getItem("wilddex"))||[];
 let currentModalAnimalIndex = null;
 
-// --- Autocomplete ---
-function showSuggestions() {
-  const val = document.getElementById("animalInput").value.toLowerCase();
-  const sugg = document.getElementById("suggestions"); sugg.innerHTML="";
+// Autocomplete
+function showSuggestions(){
+  const val=document.getElementById("animalInput").value.toLowerCase();
+  const sugg=document.getElementById("suggestions"); sugg.innerHTML="";
   if(!val) return;
   animalDatabase.forEach(a=>{
     if(a.name.toLowerCase().includes(val)){
-      const div=document.createElement("div");
-      div.className="autocomplete-suggestion"; div.innerText=a.name;
+      const div=document.createElement("div"); div.className="autocomplete-suggestion"; div.innerText=a.name;
       div.onclick=()=>{document.getElementById("animalInput").value=a.name; sugg.innerHTML="";}
       sugg.appendChild(div);
     }
   });
 }
 
-// --- Helpers ---
+// Helpers
 function random(min,max){return Math.floor(Math.random()*(max-min)+min);}
 function rarity(){let r=Math.random();if(r<0.6)return"common";if(r<0.85)return"rare";if(r<0.97)return"epic";return"legendary";}
 
-// --- Log ---
+// Log Animal
 function logAnimal(){
-  const name = document.getElementById("animalInput").value.trim();
+  const name=document.getElementById("animalInput").value.trim();
   if(!name) return;
-  const dbAnimal = animalDatabase.find(a=>a.name===name);
+  const dbAnimal=animalDatabase.find(a=>a.name===name);
   if(!dbAnimal){alert("Animal not in database"); return;}
-  let moves = ["Wild Strike","Heavy Charge"];
+  let moves=["Wild Strike","Heavy Charge"];
   if(dbAnimal.type==="fire") moves=["Flame Pounce","Savage Roar"];
   if(dbAnimal.type==="water") moves=["Tidal Slam","Splash Charge"];
   if(dbAnimal.type==="grass") moves=["Vine Whip","Nature Guard"];
   if(dbAnimal.type==="ice") moves=["Frost Bite","Glacier Punch"];
   if(dbAnimal.type==="flying") moves=["Sky Dive","Wind Slash"];
-  const animal = {
-    name: dbAnimal.name,
-    scientific: dbAnimal.scientific,
-    type: dbAnimal.type,
-    continent: dbAnimal.continent,
-    image: dbAnimal.image || `https://source.unsplash.com/featured/260x160/?${encodeURIComponent(dbAnimal.name)}`,
-    atk: random(20,100),
-    def: random(20,100),
-    rarity: rarity(),
-    move: moves[random(0,moves.length)]
-  };
-  animals.push(animal);
-  localStorage.setItem("wilddex", JSON.stringify(animals));
-  renderCollection(); renderBadges();
-  document.getElementById("animalInput").value="";
+  const animal={name:dbAnimal.name,scientific:dbAnimal.scientific,type:dbAnimal.type,continent:dbAnimal.continent,image:dbAnimal.image||`https://source.unsplash.com/featured/260x160/?${encodeURIComponent(dbAnimal.name)}`,atk:random(20,100),def:random(20,100),rarity:rarity(),move:moves[random(0,moves.length)]};
+  animals.push(animal); localStorage.setItem("wilddex",JSON.stringify(animals)); renderCollection(); renderBadges(); document.getElementById("animalInput").value="";
 }
 
-// --- Render Collection ---
+// Render Collection
 function renderCollection(){
-  const grid = document.getElementById("collectionGrid"); grid.innerHTML="";
+  const grid=document.getElementById("collectionGrid"); grid.innerHTML="";
   animals.forEach((a,i)=>{
-    const card=document.createElement("div");
-    card.className=`card ${a.type} ${a.rarity}`;
-    card.onclick=()=>openModal(i);
+    const card=document.createElement("div"); card.className=`card ${a.type} ${a.rarity}`; card.onclick=()=>openModal(i);
     const img=`<img src="${a.image}" onerror="this.onerror=null;this.src='https://via.placeholder.com/260x160?text=No+Image'">`;
-    card.innerHTML=`
-      <div class="card-header"><span>${a.name}</span><span>HP ${a.atk+a.def}</span></div>
-      ${img}
-      <div class="card-body">
-        <div><b>${a.scientific}</b></div>
-        <div><b>${a.move}</b></div>
-        <div class="stats"><span>ATK ${a.atk}</span><span>DEF ${a.def}</span></div>
-        <div class="footer"><span>${typeIcons[a.type]} ${a.type}</span><span>${continentIcons[a.continent]} ${a.continent}</span></div>
-      </div>`;
+    card.innerHTML=`<div class="card-header"><span>${a.name}</span><span>HP ${a.atk+a.def}</span></div>${img}<div class="card-body"><div><b>${a.scientific}</b></div><div><b>${a.move}</b></div><div class="stats"><span>ATK ${a.atk}</span><span>DEF ${a.def}</span></div><div class="footer"><span>${typeIcons[a.type]} ${a.type}</span><span>${continentIcons[a.continent]} ${a.continent}</span></div></div>`;
     grid.appendChild(card);
   });
 }
 
-// --- Badges ---
-function renderBadges(){
-  let counts={};
-  animals.forEach(a=>{counts[a.continent]=(counts[a.continent]||0)+1;});
-  const container=document.getElementById("badgeContainer"); container.innerHTML="";
-  for(let c in counts){
-    const badge=document.createElement("div"); badge.className="badge";
-    badge.innerHTML=`<b>${continentIcons[c]} ${c} Explorer</b><br>${counts[c]} animals logged`;
-    container.appendChild(badge);
-  }
-}
+// Badges
+function renderBadges(){let counts={}; animals.forEach(a=>{counts[a.continent]=(counts[a.continent]||0)+1;}); const container=document.getElementById("badgeContainer"); container.innerHTML=""; for(let c in counts){const badge=document.createElement("div"); badge.className="badge"; badge.innerHTML=`<b>${continentIcons[c]} ${c} Explorer</b><br>${counts[c]} animals logged`; container.appendChild(badge); } }
 
-// --- Modal ---
-function openModal(index){
-  currentModalAnimalIndex=index;
-  const a=animals[index]; const modal=document.getElementById("modal");
-  const content=document.getElementById("modalContent");
-  content.innerHTML=`
-    <img src="${a.image}" onerror="this.onerror=null;this.src='https://via.placeholder.com/400x220?text=No+Image'">
-    <h3>${a.name}</h3>
-    <p><b>Scientific Name:</b> ${a.scientific}</p>
-    <p><b>Move:</b> ${a.move}</p>
-    <p><b>ATK:</b> ${a.atk}</p>
-    <p><b>DEF:</b> ${a.def}</p>
-    <p><b>HP:</b> ${a.atk+a.def}</p>
-    <p><b>Type:</b> ${typeIcons[a.type]} ${a.type}</p>
-    <p><b>Continent:</b> ${continentIcons[a.continent]} ${a.continent}</p>
-    <p><b>Rarity:</b> ${a.rarity}</p>`;
-  modal.style.display="flex";
-}
+// Modal
+function openModal(index){currentModalAnimalIndex=index; const a=animals[index]; const modal=document.getElementById("modal"); const content=document.getElementById("modalContent"); content.innerHTML=`<img src="${a.image}" onerror="this.onerror=null;this.src='https://via.placeholder.com/400x220?text=No+Image'"><h3>${a.name}</h3><p><b>Scientific Name:</b> ${a.scientific}</p><p><b>Move:</b> ${a.move}</p><p><b>ATK:</b> ${a.atk}</p><p><b>DEF:</b> ${a.def}</p><p><b>HP:</b> ${a.atk+a.def}</p><p><b>Type:</b> ${typeIcons[a.type]} ${a.type}</p><p><b>Continent:</b> ${continentIcons[a.continent]} ${a.continent}</p><p><b>Rarity:</b> ${a.rarity}</p>`; modal.style.display="flex"; }
 function closeModal(){document.getElementById("modal").style.display="none";}
-function releaseAnimal(){
-  if(currentModalAnimalIndex!==null){
-    animals.splice(currentModalAnimalIndex,1);
-    localStorage.setItem("wilddex",JSON.stringify(animals));
-    renderCollection(); renderBadges(); closeModal();
-  }
-}
+function releaseAnimal(){if(currentModalAnimalIndex!==null){animals.splice(currentModalAnimalIndex,1); localStorage.setItem("wilddex",JSON.stringify(animals)); renderCollection(); renderBadges(); closeModal(); }}
 
-// --- Tabs ---
-function openTab(id,event){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  event.target.classList.add("active");
-}
+// Tabs
+function openTab(id,event){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active")); event.target.classList.add("active");}
 window.onclick=function(e){if(e.target==document.getElementById("modal")) closeModal();}
 
-// --- Initial render ---
+// Initial render
 renderCollection(); renderBadges();
 </script>
 </body>
