@@ -3,10 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>WildDex</title>
-
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
 <style>
 body { font-family: 'Press Start 2P', cursive; background:#d6fff5; margin:0; padding:0; color:#111;}
 header { background:#66ffcc; padding:1em; text-align:center; }
@@ -39,6 +36,7 @@ nav button.active { background:#007f66; }
   font-weight:bold;
   color:white;
   text-shadow:1px 1px #000;
+  font-size:1em;
 }
 .card img { width:100%; height:150px; object-fit:cover; border-bottom:2px solid #007f66; }
 
@@ -95,7 +93,6 @@ input, button { margin:5px 0; padding:5px; border-radius:5px; border:none; }
   <div id="badgeList"></div>
 </div>
 
-<!-- Modal -->
 <div id="modal">
   <div id="modalContent">
     <span id="modalClose" onclick="closeModal()">X</span>
@@ -104,8 +101,7 @@ input, button { margin:5px 0; padding:5px; border-radius:5px; border:none; }
 </div>
 
 <script>
-let animals = JSON.parse(localStorage.getItem('animals')) || [];
-let badges=[];
+let animals = JSON.parse(localStorage.getItem('animals') || '[]');
 
 const elements = ["Fire","Water","Grass","Electric","Ice","Flying","Poison","Dark","Normal","Steel","Psychic","Ground","Rock","Bug","Dragon","Fairy"];
 const elementSymbols = { Fire:"🔥", Water:"💧", Grass:"🌿", Electric:"⚡", Ice:"❄️", Flying:"🕊️", Poison:"☠️", Dark:"🌑", Normal:"🔹", Steel:"⚙️", Psychic:"🔮", Ground:"🌍", Rock:"🪨", Bug:"🐛", Dragon:"🐉", Fairy:"✨" };
@@ -125,44 +121,56 @@ function assignRarity(){
   const r=Math.random(); if(r<0.5) return "Common"; if(r<0.75) return "Uncommon"; if(r<0.9) return "Rare"; if(r<0.98) return "Epic"; return "Legendary";
 }
 function generateMove(name){ return name+" Tackle"; }
-function fetchAnimalImage(name, callback){ callback(`https://source.unsplash.com/200x200/?${encodeURIComponent(name)}`); }
+function fetchAnimalImage(name){ return `https://source.unsplash.com/200x200/?${encodeURIComponent(name)}`; }
 
 function logAnimal(){
   const nameInput=document.getElementById("animalName");
   const name=nameInput.value.trim(); if(!name) return alert("Enter an animal name!");
-  const elementsArr=assignElements(name);
-  const continentsArr=assignContinents(name);
-  const habitatsArr=assignHabitats(name);
-  const rarity=assignRarity();
-  const move=generateMove(name);
-  const animal={id:Date.now(),name,elements:elementsArr,continents:continentsArr,habitats:habitatsArr,rarity,attack:Math.floor(Math.random()*100),defense:Math.floor(Math.random()*100),move,image:""};
-  fetchAnimalImage(name,img=>{ animal.image=img; animals.push(animal); localStorage.setItem('animals',JSON.stringify(animals)); nameInput.value=""; renderAnimals(); updateBadges(); });
+  const animal = {
+    id: Date.now(),
+    name: name,
+    elements: assignElements(name),
+    continents: assignContinents(name),
+    habitats: assignHabitats(name),
+    rarity: assignRarity(),
+    attack: Math.floor(Math.random()*100),
+    defense: Math.floor(Math.random()*100),
+    move: generateMove(name),
+    image: fetchAnimalImage(name)
+  };
+  animals.push(animal);
+  localStorage.setItem('animals', JSON.stringify(animals));
+  nameInput.value="";
+  renderAnimals();
+  updateBadges();
 }
 
 function renderAnimals(){
-  const container=document.getElementById("cards");
+  const container = document.getElementById("cards");
   container.innerHTML="";
   animals.forEach(a=>{
     const elemSymbols=a.elements.map(e=>elementSymbols[e]||e).join(" ");
     const contSymbols=a.continents.map(c=>continentSymbols[c]||c).join(" ");
-    container.innerHTML+=`
-      <div class="card ${a.rarity}" onclick='showModal(${JSON.stringify(a)})'>
-        <div class="card-header" style="background:linear-gradient(90deg, #66ffcc, #00b386);">${a.name}</div>
-        <img src="${a.image}">
-        <div class="card-body">
-          <div class="elements">${elemSymbols}</div>
-          <div class="continents">${contSymbols}</div>
-          <div>ATK:<div class="stat-bar"><div class="stat-fill" style="width:${a.attack}%;"></div></div></div>
-          <div>DEF:<div class="stat-bar"><div class="stat-fill" style="width:${a.defense}%;"></div></div></div>
-          <div>Move: ${a.move}</div>
-        </div>
+    const card = document.createElement("div");
+    card.className = `card ${a.rarity}`;
+    card.innerHTML = `
+      <div class="card-header">${a.name}</div>
+      <img src="${a.image}">
+      <div class="card-body">
+        <div class="elements">${elemSymbols}</div>
+        <div class="continents">${contSymbols}</div>
+        <div>ATK:<div class="stat-bar"><div class="stat-fill" style="width:${a.attack}%;"></div></div></div>
+        <div>DEF:<div class="stat-bar"><div class="stat-fill" style="width:${a.defense}%;"></div></div></div>
+        <div>Move: ${a.move}</div>
       </div>`;
+    card.addEventListener("click",()=>showModal(a.id));
+    container.appendChild(card);
   });
 }
 
-function releaseAnimal(id){ animals=animals.filter(a=>a.id!==id); localStorage.setItem('animals',JSON.stringify(animals)); renderAnimals(); updateBadges(); }
-
-function showModal(animal){
+function showModal(id){
+  const animal = animals.find(a=>a.id===id);
+  if(!animal) return;
   document.getElementById('modal').style.display='flex';
   const elemSymbols=animal.elements.map(e=>elementSymbols[e]||e).join(" ");
   const contSymbols=animal.continents.map(c=>continentSymbols[c]||c).join(" ");
@@ -180,6 +188,13 @@ function showModal(animal){
 }
 
 function closeModal(){ document.getElementById('modal').style.display='none'; }
+
+function releaseAnimal(id){
+  animals = animals.filter(a=>a.id!==id);
+  localStorage.setItem('animals', JSON.stringify(animals));
+  renderAnimals();
+  updateBadges();
+}
 
 function updateBadges(){
   const badgeDiv=document.getElementById("badgeList");
