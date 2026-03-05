@@ -1,216 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>WildDex</title>
-
+<meta charset="UTF-8" />
+<title>WildDex v2</title>
 <style>
-
-body{
-font-family:Arial;
-background:linear-gradient(135deg,#b7e4d7,#d7f2ff);
-display:flex;
-justify-content:center;
-padding:40px;
-}
-
-.container{
-display:grid;
-grid-template-columns:repeat(auto-fill,260px);
-gap:30px;
-max-width:1000px;
-}
-
-.card{
-
-border-radius:18px;
-overflow:hidden;
-color:white;
-box-shadow:0 12px 30px rgba(0,0,0,.25);
-position:relative;
-transition:.25s;
-}
-
-.card:hover{
-transform:scale(1.05);
-}
-
-.card.shiny{
-animation:shine 4s infinite linear;
-}
-
-@keyframes shine{
-0%{filter:hue-rotate(0deg)}
-100%{filter:hue-rotate(360deg)}
-}
-
-.card-header{
-display:flex;
-justify-content:space-between;
-padding:14px;
-font-weight:bold;
-font-size:18px;
-}
-
-.card-image{
-padding:10px;
-}
-
-.card-image img{
-width:100%;
-height:150px;
-object-fit:cover;
-border-radius:14px;
-background:white;
-}
-
-.card-body{
-background:rgba(255,255,255,.9);
-color:black;
-padding:14px;
-}
-
-.move{
-display:flex;
-justify-content:space-between;
-font-weight:bold;
-margin-bottom:6px;
-}
-
-.stats{
-display:flex;
-gap:20px;
-font-weight:bold;
-margin-top:8px;
-}
-
-.footer{
-display:flex;
-justify-content:space-between;
-margin-top:10px;
-font-size:14px;
-}
-
-.badge{
-font-weight:bold;
-letter-spacing:1px;
-}
-
-.fire{background:linear-gradient(135deg,#ff7b4b,#ffcc5c)}
-.water{background:linear-gradient(135deg,#4facfe,#00f2fe)}
-.grass{background:linear-gradient(135deg,#43e97b,#38f9d7)}
-.ice{background:linear-gradient(135deg,#7de2fc,#b9b6e5)}
-.normal{background:linear-gradient(135deg,#bdbdbd,#e0e0e0)}
-.flying{background:linear-gradient(135deg,#89f7fe,#66a6ff)}
-
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #b7e4d7, #d7f2ff);
+  }
+  .tabs {
+    display: flex;
+    background: #2c3e50;
+    color: white;
+  }
+  .tab {
+    padding: 14px 22px;
+    cursor: pointer;
+  }
+  .tab.active {
+    background: #1abc9c;
+  }
+  .section {
+    display: none;
+    padding: 25px;
+  }
+  .section.active {
+    display: block;
+  }
+  input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    width: 240px;
+  }
+  button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #1abc9c;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .collection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 260px);
+    gap: 24px;
+  }
+  .card {
+    border-radius: 18px;
+    overflow: hidden;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    transition: 0.25s;
+  }
+  .card:hover {
+    transform: scale(1.05);
+  }
+  .card.shiny {
+    animation: shine 4s linear infinite;
+  }
+  @keyframes shine {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+  .fire {
+    background: linear-gradient(135deg, #ff7b4b, #ffcc5c);
+  }
+  .water {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+  }
+  .grass {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+  }
+  .ice {
+    background: linear-gradient(135deg, #7de2fc, #b9b6e5);
+  }
+  .flying {
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
+  }
+  .normal {
+    background: linear-gradient(135deg, #bdbdbd, #e0e0e0);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    font-weight: bold;
+  }
+  .card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: white;
+  }
+  .card-body {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+    padding: 14px;
+  }
+  .stats {
+    display: flex;
+    gap: 20px;
+    font-weight: bold;
+    margin-top: 8px;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .badge {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    min-width: 140px;
+    text-align: center;
+  }
 </style>
 </head>
-
 <body>
+  <div class="tabs">
+    <div class="tab active" onclick="openTab('log')">Log Animal</div>
+    <div class="tab" onclick="openTab('collection')">Collection</div>
+    <div class="tab" onclick="openTab('badges')">Badges</div>
+  </div>
 
-<div class="container" id="cards"></div>
+  <div id="log" class="section active">
+    <h2>Log an Animal</h2>
+    <input id="animalInput" placeholder="e.g. Snow Leopard" />
+    <button onclick="logAnimal()">Log</button>
+  </div>
+
+  <div id="collection" class="section">
+    <h2>My WildDex</h2>
+    <div id="collectionGrid" class="collection"></div>
+  </div>
+
+  <div id="badges" class="section">
+    <h2>Explorer Badges</h2>
+    <div id="badgeContainer" class="badges"></div>
+  </div>
 
 <script>
+  let animals = JSON.parse(localStorage.getItem("wilddex")) || [];
 
-const animals=[
+  const continents = {
+    lion: "Africa",
+    elephant: "Africa",
+    giraffe: "Africa",
+    zebra: "Africa",
+    tiger: "Asia",
+    panda: "Asia",
+    orangutan: "Asia",
+    kangaroo: "Australia",
+    koala: "Australia",
+    bear: "North America",
+    bison: "North America",
+    moose: "North America",
+    penguin: "Antarctica",
+    seal: "Antarctica",
+    whale: "Ocean",
+    shark: "Ocean",
+    dolphin: "Ocean",
+  };
 
-{name:"African Lion",species:"Panthera leo",type:"fire",continent:"Africa"},
-{name:"Polar Bear",species:"Ursus maritimus",type:"ice",continent:"Arctic"},
-{name:"Blue Whale",species:"Balaenoptera musculus",type:"water",continent:"Worldwide"},
-{name:"Bald Eagle",species:"Haliaeetus leucocephalus",type:"flying",continent:"North America"},
-{name:"Tiger",species:"Panthera tigris",type:"fire",continent:"Asia"},
-{name:"Kangaroo",species:"Macropus",type:"grass",continent:"Australia"},
-{name:"Penguin",species:"Aptenodytes",type:"ice",continent:"Antarctica"},
-{name:"Elephant",species:"Loxodonta",type:"grass",continent:"Africa"}
+  const types = {
+    lion: "fire",
+    tiger: "fire",
+    elephant: "grass",
+    giraffe: "grass",
+    zebra: "grass",
+    penguin: "ice",
+    bear: "ice",
+    whale: "water",
+    shark: "water",
+    dolphin: "water",
+    eagle: "flying",
+    hawk: "flying",
+  };
 
-]
+  function getType(name) {
+    name = name.toLowerCase();
+    for (let key in types) if (name.includes(key)) return types[key];
+    return "normal";
+  }
 
-const moves={
+  function getContinent(name) {
+    name = name.toLowerCase();
+    for (let key in continents) if (name.includes(key)) return continents[key];
+    return "Unknown";
+  }
 
-fire:["Savannah Roar","Blazing Pounce","Flame Strike"],
-water:["Ocean Slam","Tidal Charge","Aqua Surge"],
-grass:["Nature Stomp","Leaf Guard","Vine Lash"],
-ice:["Frost Bite","Ice Slam","Glacier Guard"],
-flying:["Sky Dive","Wind Slash","Talon Strike"],
-normal:["Wild Strike","Heavy Charge"]
+  function animalImage(name) {
+    return (
+      "https://cdn.jsdelivr.net/gh/ardamavi/AnimalPhotos/" +
+      name.toLowerCase().replaceAll(" ", "") +
+      ".jpg"
+    );
+  }
 
-}
+  function random(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
 
-function random(min,max){
-return Math.floor(Math.random()*(max-min)+min)
-}
+  function rarity() {
+    let r = Math.random();
+    if (r < 0.6) return "Common";
+    if (r < 0.85) return "Rare";
+    if (r < 0.97) return "Epic";
+    return "Legendary";
+  }
 
-function image(name){
-return "https://source.unsplash.com/600x400/?"+encodeURIComponent(name+" wildlife animal")
-}
+  function logAnimal() {
+    let name = document.getElementById("animalInput").value.trim();
+    if (!name) return;
 
-function rarity(){
-let r=Math.random()
+    let animal = {
+      name: name,
+      type: getType(name),
+      continent: getContinent(name),
+      atk: random(20, 100),
+      def: random(20, 100),
+      rarity: rarity(),
+      shiny: Math.random() < 0.05,
+    };
 
-if(r<0.6) return "Common"
-if(r<0.85) return "Rare"
-if(r<0.97) return "Epic"
-return "Legendary"
-}
+    animals.push(animal);
+    localStorage.setItem("wilddex", JSON.stringify(animals));
+    renderCollection();
+    renderBadges();
+    document.getElementById("animalInput").value = "";
+  }
 
-function createCard(a){
+  function renderCollection() {
+    let grid = document.getElementById("collectionGrid");
+    grid.innerHTML = "";
 
-let atk=random(30,100)
-let def=random(30,100)
+    animals.forEach((a) => {
+      let card = document.createElement("div");
+      card.className = "card " + a.type + (a.shiny ? " shiny" : "");
 
-let move=moves[a.type][random(0,moves[a.type].length)]
+      card.innerHTML = `
+        <div class="card-header">
+          <span>${a.name}</span>
+          <span>HP ${a.atk + a.def}</span>
+        </div>
+        <img src="${animalImage(a.name)}" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'">
+        <div class="card-body">
+          <div><b>Wild Strike</b></div>
+          <div class="stats">
+            <span>ATK ${a.atk}</span>
+            <span>DEF ${a.def}</span>
+          </div>
+          <div class="footer">
+            <span>🌍 ${a.continent}</span>
+            <span>${a.rarity}</span>
+          </div>
+        </div>
+      `;
 
-let r=rarity()
-let shiny=Math.random()<0.05
+      grid.appendChild(card);
+    });
+  }
 
-let card=document.createElement("div")
-card.className="card "+a.type+(shiny?" shiny":"")
+  function renderBadges() {
+    let counts = {};
+    animals.forEach((a) => {
+      counts[a.continent] = (counts[a.continent] || 0) + 1;
+    });
 
-card.innerHTML=`
+    let container = document.getElementById("badgeContainer");
+    container.innerHTML = "";
 
-<div class="card-header">
-<span>${a.name}</span>
-<span>HP ${atk+def}</span>
-</div>
+    for (let c in counts) {
+      let badge = document.createElement("div");
+      badge.className = "badge";
 
-<div class="card-image">
-<img src="${image(a.name)}">
-</div>
+      badge.innerHTML = `<b>${c} Explorer</b><br>${counts[c]} animals logged`;
 
-<div class="card-body">
+      container.appendChild(badge);
+    }
+  }
 
-<div class="move">
-<span>${move}</span>
-<span>${random(20,90)}</span>
-</div>
+  function openTab(id) {
+    document.querySelectorAll(".section").forEach((s) =>
+      s.classList.remove("active")
+    );
+    document.getElementById(id).classList.add("active");
 
-<div>${a.species}</div>
+    document.querySelectorAll(".tab").forEach((t) =>
+      t.classList.remove("active")
+    );
+    event.target.classList.add("active");
+  }
 
-<div class="stats">
-<span>ATK ${atk}</span>
-<span>DEF ${def}</span>
-</div>
-
-<div class="footer">
-<span>🌍 ${a.continent}</span>
-<span class="badge">${r}</span>
-</div>
-
-</div>
-
-`
-
-return card
-
-}
-
-const container=document.getElementById("cards")
-
-animals.forEach(a=>{
-container.appendChild(createCard(a))
-})
-
+  renderCollection();
+  renderBadges();
 </script>
-
 </body>
 </html>
