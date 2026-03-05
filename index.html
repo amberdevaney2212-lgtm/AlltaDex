@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WildDex v8 Enhanced</title>
+<title>WildDex v9</title>
 <style>
 body{font-family:Arial;margin:0;background:linear-gradient(135deg,#b7e4d7,#d7f2ff);}
 .tabs{display:flex;background:#2c3e50;color:white;}
@@ -15,8 +15,10 @@ button{padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color:
 .collection{display:grid;grid-template-columns:repeat(auto-fill,260px);gap:24px;}
 .card{border-radius:18px;overflow:hidden;color:white;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:.25s;cursor:pointer;position:relative;height:350px;}
 .card:hover{transform:scale(1.05);}
-.card-overlay{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:inherit;pointer-events:none;z-index:0;background-repeat:repeat;background-position:center;background-size:20px;}
 .card-header,.card-body,.stats,.footer{position:relative;z-index:1;}
+.card-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:0.2;background-repeat:repeat;background-position:center;background-size:20px;z-index:0;}
+
+/* Rarity */
 .card.common .card-overlay{background:none;}
 .card.rare .card-overlay{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.15),rgba(255,255,255,0.15) 5px,transparent 5px,transparent 10px);}
 .card.epic .card-overlay{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 4px,transparent 4px,transparent 8px);}
@@ -31,45 +33,44 @@ button{padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color:
 .flying{background:linear-gradient(135deg,#89f7fe,#66a6ff);}
 .normal{background:linear-gradient(135deg,#bdbdbd,#e0e0e0);}
 
-/* Elemental animations */
-.card.fire .card-overlay{
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%23FFD700" d="M10 0 C8 5,12 5,10 10 C14 8,12 12,10 20 C6 12,8 8,10 0 Z"/></svg>');
-  animation:fireFlicker 1s linear infinite;
-}
-@keyframes fireFlicker{0%{background-position:0 0;}25%{background-position:5px 2px;}50%{background-position:2px 5px;}75%{background-position:4px 1px;}100%{background-position:0 0;}}
+/* Card body with overlay */
+.card-body{position:relative;background:rgba(255,255,255,0.9);color:black;padding:14px;height:110px;overflow:hidden;border-radius:0 0 18px 18px;}
+.card-body .card-overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.2;background-repeat:repeat;background-position:center;}
 
-.card.water .card-overlay{
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" fill="rgba(255,255,255,0.3)"/></svg>');
-  background-size:30px 30px;
-  animation:waterRise 6s linear infinite;
+/* Elemental effects */
+.card.fire .card-body .card-overlay{
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="orange"/></svg>');
+  animation: fireSpark 3s linear infinite;
 }
-@keyframes waterRise{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
+@keyframes fireSpark{0%{background-position:0 0;}50%{background-position:10px 5px;}100%{background-position:0 0;}}
 
-.card.grass .card-overlay{
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="4" fill="rgba(255,255,255,0.3)"/></svg>');
-  background-size:20px 20px;
-  animation:grassFloat 5s linear infinite;
+.card.water .card-body .card-overlay{
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="2" fill="rgba(255,255,255,0.3)"/></svg>');
+  background-size:15px;animation: waterFloat 6s linear infinite;
 }
-@keyframes grassFloat{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
+@keyframes waterFloat{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
 
-.card.ice .card-overlay{
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><polygon points="5,0 7,4 11,4 8,7 9,11 5,9 1,11 2,7 -1,4 3,4" fill="rgba(255,255,255,0.4)"/></svg>');
-  background-size:20px 20px;
-  animation:iceSparkle 4s linear infinite;
+.card.grass .card-body .card-overlay{
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><polygon points="2,0 4,2 2,4 0,2" fill="rgba(0,255,0,0.3)"/></svg>');
+  background-size:15px;animation: grassDrift 5s linear infinite;
 }
-@keyframes iceSparkle{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
+@keyframes grassDrift{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
 
-.card.flying .card-overlay{
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="20" y2="0" stroke="rgba(255,255,255,0.3)" stroke-width="2"/></svg>');
-  background-size:40px 20px;
-  animation:windMove 3s linear infinite;
+.card.ice .card-body .card-overlay{
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><polygon points="5,0 6,2 8,2 6,4 7,6 5,5 3,6 4,4 2,2 4,2" fill="rgba(173,216,230,0.3)"/></svg>');
+  background-size:15px;animation: iceDrift 4s linear infinite;
 }
-@keyframes windMove{0%{background-position:0 0;}100%{background-position:40px 0;}}
+@keyframes iceDrift{0%{background-position:0 100%;}100%{background-position:0 -100%;}}
 
-/* Card content styles */
+.card.flying .card-body .card-overlay{
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.2)" stroke-width="2"/></svg>');
+  background-size:20px 10px;animation: windMove 3s linear infinite;
+}
+@keyframes windMove{0%{background-position:0 0;}100%{background-position:20px 0;}}
+
+/* Other card content */
 .card-header{display:flex;justify-content:space-between;padding:12px;font-weight:bold;}
-.card img{width:100%;height:160px;object-fit:cover;background:white;}
-.card-body{background:rgba(255,255,255,.9);color:black;padding:14px;height:110px;}
+.card img{width:100%;height:160px;object-fit:cover;background:white;border-bottom:2px solid rgba(0,0,0,0.1);}
 .stats{display:flex;gap:20px;font-weight:bold;margin-top:8px;}
 .footer{display:flex;justify-content:space-between;margin-top:10px;font-size:14px;}
 .badges{display:flex;flex-wrap:wrap;gap:20px;}
@@ -119,7 +120,7 @@ button{padding:10px 18px;border:none;border-radius:8px;background:#1abc9c;color:
 </div>
 
 <script>
-// --- Animal database ---
+// --- Database ---
 const animalDatabase=[
 {name:"African Lion",type:"fire",continent:"Africa",image:"https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg"},
 {name:"Tiger",type:"fire",continent:"Asia",image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg"},
@@ -173,7 +174,7 @@ function logAnimal(){
   if(dbAnimal.type==="grass") moves=["Vine Whip","Nature Guard"];
   if(dbAnimal.type==="ice") moves=["Frost Bite","Glacier Punch"];
   if(dbAnimal.type==="flying") moves=["Sky Dive","Wind Slash"];
-  let animal={name:dbAnimal.name,type:dbAnimal.type,continent:dbAnimal.continent,image:dbAnimal.image || "",atk:random(20,100),def:random(20,100),rarity:rarity(),shiny:Math.random()<0.05,move:moves[random(0,moves.length)]};
+  let animal={name:dbAnimal.name,type:dbAnimal.type,continent:dbAnimal.continent,image:dbAnimal.image||"",atk:random(20,100),def:random(20,100),rarity:rarity(),shiny:Math.random()<0.05,move:moves[random(0,moves.length)]};
   animals.push(animal);
   localStorage.setItem("wilddex",JSON.stringify(animals));
   renderCollection();
@@ -188,10 +189,10 @@ function renderCollection(){
   animals.forEach((a,i)=>{
     const card=document.createElement("div");
     card.className="card "+a.type+" "+a.rarity+(a.shiny?" shiny":"");
-    card.innerHTML=`<div class="card-overlay"></div>
-      <div class="card-header"><span>${a.name}</span><span>HP ${a.atk+a.def}</span></div>
-      ${a.image?`<img src="${a.image}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;font-size:80px;text-align:center;height:160px;line-height:160px;&quot;>🖤</div>'">`:`<div style="font-size:80px;text-align:center;height:160px;line-height:160px;">🖤</div>`}
+    card.innerHTML=`<div class="card-header"><span>${a.name}</span><span>HP ${a.atk+a.def}</span></div>
+      ${a.image ? `<img src="${a.image}" alt="${a.name}" onerror="this.style.display='none';">` : `<div style="font-size:80px;text-align:center;height:160px;line-height:160px;">🖤</div>`}
       <div class="card-body">
+        <div class="card-overlay"></div>
         <div><b>${a.move}</b></div>
         <div class="stats"><span>ATK ${a.atk}</span><span>DEF ${a.def}</span></div>
         <div class="footer">
@@ -222,7 +223,7 @@ function openModal(index){
   const a=animals[index];
   const modal=document.getElementById("modal");
   const content=document.getElementById("modalContent");
-  content.innerHTML=`${a.image?`<img src="${a.image}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;font-size:80px;text-align:center;height:220px;line-height:220px;&quot;>🖤</div>'">`:`<div style="font-size:80px;text-align:center;height:220px;line-height:220px;">🖤</div>`}
+  content.innerHTML=`${a.image?`<img src="${a.image}" alt="${a.name}" onerror="this.style.display='none';">`:`<div style="font-size:80px;text-align:center;height:220px;line-height:220px;">🖤</div>`}
     <h3>${a.name}</h3>
     <p><b>Move:</b> ${a.move}</p>
     <p><b>ATK:</b> ${a.atk}</p>
@@ -233,7 +234,6 @@ function openModal(index){
     <p><b>Rarity:</b> ${a.rarity}</p>`;
   modal.style.display="flex";
 }
-
 function closeModal(){document.getElementById("modal").style.display="none";}
 function releaseAnimal(){if(currentModalAnimalIndex!==null){animals.splice(currentModalAnimalIndex,1);localStorage.setItem("wilddex",JSON.stringify(animals));renderCollection();renderBadges();closeModal();}}
 window.onclick=function(e){if(e.target==document.getElementById("modal")) closeModal();}
