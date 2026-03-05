@@ -30,20 +30,10 @@ nav button.active { background:#007f66; }
 }
 .card:hover { transform: scale(1.05); box-shadow:0 0 15px #00b386; }
 
-.card-header {
-  height:50px;
-  display:flex; justify-content:center; align-items:center;
-  font-weight:bold;
-  color:white;
-  text-shadow:1px 1px #000;
-  font-size:1em;
-}
+.card-header { height:50px; display:flex; justify-content:center; align-items:center; font-weight:bold; color:white; text-shadow:1px 1px #000; font-size:1em; }
 .card img { width:100%; height:150px; object-fit:cover; border-bottom:2px solid #007f66; }
-
 .card-body { padding:5px; }
-
 .elements, .continents { margin:3px 0; font-size:1.2em; }
-
 .stat-bar { height:10px; border-radius:5px; background:#ccc; margin:2px 0; overflow:hidden; }
 .stat-fill { height:100%; background:#00b386; }
 
@@ -79,25 +69,23 @@ input, button { margin:5px 0; padding:5px; border-radius:5px; border:none; }
 </nav>
 
 <div id="log" class="tab active">
-  <input id="animalName" placeholder="Enter animal name">
-  <button onclick="logAnimal()">✨ Log Animal</button>
+<input id="animalName" placeholder="Enter animal name">
+<button onclick="logAnimal()">✨ Log Animal</button>
 </div>
 
 <div id="catches" class="tab">
-  <div id="cardsContainer">
-    <div id="cards"></div>
-  </div>
+<div id="cardsContainer"></div>
 </div>
 
 <div id="badges" class="tab">
-  <div id="badgeList"></div>
+<div id="badgeList"></div>
 </div>
 
 <div id="modal">
-  <div id="modalContent">
-    <span id="modalClose" onclick="closeModal()">X</span>
-    <div id="modalInner"></div>
-  </div>
+<div id="modalContent">
+<span id="modalClose" onclick="closeModal()">X</span>
+<div id="modalInner"></div>
+</div>
 </div>
 
 <script>
@@ -117,15 +105,14 @@ function openTab(name){
 function assignElements(name){ return [elements[Math.floor(Math.random()*elements.length)]]; }
 function assignContinents(name){ return ["Worldwide"]; }
 function assignHabitats(name){ return ["Various"]; }
-function assignRarity(){
-  const r=Math.random(); if(r<0.5) return "Common"; if(r<0.75) return "Uncommon"; if(r<0.9) return "Rare"; if(r<0.98) return "Epic"; return "Legendary";
-}
+function assignRarity(){ const r=Math.random(); if(r<0.5) return "Common"; if(r<0.75) return "Uncommon"; if(r<0.9) return "Rare"; if(r<0.98) return "Epic"; return "Legendary"; }
 function generateMove(name){ return name+" Tackle"; }
 function fetchAnimalImage(name){ return `https://source.unsplash.com/200x200/?${encodeURIComponent(name)}`; }
 
 function logAnimal(){
-  const nameInput=document.getElementById("animalName");
-  const name=nameInput.value.trim(); if(!name) return alert("Enter an animal name!");
+  const nameInput = document.getElementById("animalName");
+  const name = nameInput.value.trim(); 
+  if(!name) return alert("Enter an animal name!");
   const animal = {
     id: Date.now(),
     name: name,
@@ -146,7 +133,7 @@ function logAnimal(){
 }
 
 function renderAnimals(){
-  const container = document.getElementById("cards");
+  const container = document.getElementById("cardsContainer");
   container.innerHTML="";
   animals.forEach(a=>{
     const elemSymbols=a.elements.map(e=>elementSymbols[e]||e).join(" ");
@@ -172,9 +159,9 @@ function showModal(id){
   const animal = animals.find(a=>a.id===id);
   if(!animal) return;
   document.getElementById('modal').style.display='flex';
-  const elemSymbols=animal.elements.map(e=>elementSymbols[e]||e).join(" ");
-  const contSymbols=animal.continents.map(c=>continentSymbols[c]||c).join(" ");
-  const habitatsStr=animal.habitats.join(", ");
+  const elemSymbols = animal.elements.map(e=>elementSymbols[e]||e).join(" ");
+  const contSymbols = animal.continents.map(c=>continentSymbols[c]||c).join(" ");
+  const habitatsStr = animal.habitats.join(", ");
   document.getElementById('modalInner').innerHTML=`
     <h2>${animal.name}</h2>
     <img src="${animal.image}" style="width:100%;border-radius:8px;">
@@ -197,7 +184,7 @@ function releaseAnimal(id){
 }
 
 function updateBadges(){
-  const badgeDiv=document.getElementById("badgeList");
+  const badgeDiv = document.getElementById("badgeList");
   badgeDiv.innerHTML="";
   if(animals.length>=1) badgeDiv.innerHTML+=`<div class="badge">🎉 1</div>`;
   if(animals.length>=10) badgeDiv.innerHTML+=`<div class="badge">🌿 10</div>`;
