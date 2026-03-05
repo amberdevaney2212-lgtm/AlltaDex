@@ -11,46 +11,27 @@ header h1 { margin:0; color:#007f66; font-size:2em; text-shadow: 1px 1px #fff; }
 nav { display:flex; justify-content:center; margin:1em 0; }
 nav button { margin:0 5px; padding:0.5em 1em; cursor:pointer; border:none; border-radius:5px; background:#00b386; color:white; font-weight:bold; transition:0.2s; }
 nav button.active { background:#007f66; }
-
 .tab { display:none; padding:0 1em; }
 .tab.active { display:block; }
-
 #cardsContainer { display:flex; flex-wrap:wrap; justify-content:center; max-height:none; overflow:visible; margin-bottom:10px; }
-
-.card {
-  border-radius:12px; 
-  width:220px; 
-  margin:10px; 
-  background:#b2fff0; 
-  position:relative; 
-  cursor:pointer;
-  box-shadow:0 0 5px #007f66;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow:hidden;
-}
+.card { border-radius:12px; width:220px; margin:10px; background:#b2fff0; position:relative; cursor:pointer; box-shadow:0 0 5px #007f66; transition: transform 0.2s, box-shadow 0.2s; overflow:hidden; }
 .card:hover { transform: scale(1.05); box-shadow:0 0 15px #00b386; }
-
 .card-header { height:50px; display:flex; justify-content:center; align-items:center; font-weight:bold; color:white; text-shadow:1px 1px #000; font-size:1em; }
 .card img { width:100%; height:150px; object-fit:cover; border-bottom:2px solid #007f66; }
 .card-body { padding:5px; }
 .elements, .continents { margin:3px 0; font-size:1.2em; }
 .stat-bar { height:10px; border-radius:5px; background:#ccc; margin:2px 0; overflow:hidden; }
 .stat-fill { height:100%; background:#00b386; }
-
 .card .rarity { position:absolute; top:8px; left:8px; padding:2px 6px; border-radius:5px; font-weight:bold; text-shadow:0 0 3px #000; }
 .Common { border:2px solid gray; }
 .Uncommon { border:2px solid green; }
 .Rare { border:2px solid blue; background:linear-gradient(135deg, #99ccff, #66ffff); }
 .Epic { border:2px solid purple; background:linear-gradient(135deg, #cc99ff, #9933ff); }
 .Legendary { border:3px solid gold; background:linear-gradient(135deg, gold, #ffff99); animation:holo 2s infinite alternate; }
-
 @keyframes holo { 0% { box-shadow:0 0 10px gold;} 100% { box-shadow:0 0 30px gold;} }
-
 input, button { margin:5px 0; padding:5px; border-radius:5px; border:none; }
-
 .badge { display:inline-block; margin:5px; padding:10px; border-radius:50%; background:#00b386; color:white; font-size:0.7em; text-align:center; width:60px; height:60px; line-height:1em; text-shadow:0 0 2px #000; transition:0.3s;}
 .badge.locked { background:#ccc; color:#666; }
-
 #modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
 #modalContent {background:#d6fff5;padding:20px;border-radius:12px;max-width:400px;position:relative;}
 #modalClose {position:absolute;top:5px;right:10px;cursor:pointer;font-weight:bold;}
@@ -89,7 +70,10 @@ input, button { margin:5px 0; padding:5px; border-radius:5px; border:none; }
 </div>
 
 <script>
-let animals = JSON.parse(localStorage.getItem('animals') || '[]');
+let animals = [];
+
+function saveAnimals(){ localStorage.setItem('animals', JSON.stringify(animals)); }
+function loadAnimals(){ animals = JSON.parse(localStorage.getItem('animals') || '[]'); }
 
 const elements = ["Fire","Water","Grass","Electric","Ice","Flying","Poison","Dark","Normal","Steel","Psychic","Ground","Rock","Bug","Dragon","Fairy"];
 const elementSymbols = { Fire:"🔥", Water:"💧", Grass:"🌿", Electric:"⚡", Ice:"❄️", Flying:"🕊️", Poison:"☠️", Dark:"🌑", Normal:"🔹", Steel:"⚙️", Psychic:"🔮", Ground:"🌍", Rock:"🪨", Bug:"🐛", Dragon:"🐉", Fairy:"✨" };
@@ -111,7 +95,7 @@ function fetchAnimalImage(name){ return `https://source.unsplash.com/200x200/?${
 
 function logAnimal(){
   const nameInput = document.getElementById("animalName");
-  const name = nameInput.value.trim(); 
+  const name = nameInput.value.trim();
   if(!name) return alert("Enter an animal name!");
   const animal = {
     id: Date.now(),
@@ -126,7 +110,7 @@ function logAnimal(){
     image: fetchAnimalImage(name)
   };
   animals.push(animal);
-  localStorage.setItem('animals', JSON.stringify(animals));
+  saveAnimals();
   nameInput.value="";
   renderAnimals();
   updateBadges();
@@ -178,7 +162,7 @@ function closeModal(){ document.getElementById('modal').style.display='none'; }
 
 function releaseAnimal(id){
   animals = animals.filter(a=>a.id!==id);
-  localStorage.setItem('animals', JSON.stringify(animals));
+  saveAnimals();
   renderAnimals();
   updateBadges();
 }
@@ -192,8 +176,11 @@ function updateBadges(){
   if(animals.some(a=>a.rarity==="Legendary")) badgeDiv.innerHTML+=`<div class="badge">⭐ L</div>`;
 }
 
+// Initialize
+loadAnimals();
 renderAnimals();
 updateBadges();
 </script>
+
 </body>
 </html>
