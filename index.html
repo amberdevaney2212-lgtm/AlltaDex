@@ -12,55 +12,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-/* General Body & Header */
 body { font-family: 'Press Start 2P', cursive; background:#d6fff5; margin:0; padding:0; color:#111;}
 header { background:#66ffcc; padding:1em; text-align:center; }
 header h1 { margin:0; color:#007f66; font-size:2em; text-shadow: 1px 1px #fff; }
-
-/* Tabs */
 nav { display:flex; justify-content:center; margin:1em 0; }
 nav button { margin:0 5px; padding:0.5em 1em; cursor:pointer; border:none; border-radius:5px; background:#00b386; color:white; font-weight:bold; transition:0.2s; }
 nav button.active { background:#007f66; }
-
-/* Tab content */
 .tab { display:none; padding:0 1em; }
 .tab.active { display:block; }
-
-/* Cards */
-.card { border-radius:12px; padding:10px; margin:10px; width:220px; display:inline-block; background:#b2fff0; position:relative; box-shadow:0 0 5px #007f66; transition: transform 0.2s;}
+.card { border-radius:12px; padding:10px; margin:10px; width:220px; display:inline-block; background:#b2fff0; position:relative; box-shadow:0 0 5px #007f66; transition: transform 0.2s; cursor:pointer;}
 .card:hover { transform: scale(1.05); }
 .card img { width:100%; border-radius:8px; height:150px; object-fit:cover; }
 .card .element { position:absolute; top:8px; right:8px; padding:2px 6px; border-radius:5px; font-weight:bold; }
-.card .rarity { position:absolute; top:8px; left:8px; padding:2px 6px; border-radius:5px; font-weight:bold; text-shadow: 0 0 3px #000; }
-
-/* Element Colors */
-.Fire { background: #ff7f50; color:white; }
-.Water { background: #3399ff; color:white; }
-.Grass { background: #66cc66; color:white; }
-.Electric { background: #ffeb3b; color:black; }
-.Ice { background: #66ffff; color:black; }
-.Flying { background: #99ccff; color:black; }
-.Poison { background: #9933ff; color:white; }
-.Dark { background: #333333; color:white; }
-.Normal { background: #999999; color:white; }
-
-/* Rarity Effects */
+.card .rarity { position:absolute; top:8px; left:8px; padding:2px 6px; border-radius:5px; font-weight:bold; text-shadow:0 0 3px #000; }
+.Fire { background:#ff7f50; color:white; }
+.Water { background:#3399ff; color:white; }
+.Grass { background:#66cc66; color:white; }
+.Electric { background:#ffeb3b; color:black; }
+.Ice { background:#66ffff; color:black; }
+.Flying { background:#99ccff; color:black; }
+.Poison { background:#9933ff; color:white; }
+.Dark { background:#333333; color:white; }
+.Normal { background:#999999; color:white; }
 .Common { border:2px solid gray; }
 .Uncommon { border:2px solid green; }
 .Rare { border:2px solid blue; background:linear-gradient(135deg, #99ccff, #66ffff); }
 .Epic { border:2px solid purple; background:linear-gradient(135deg, #cc99ff, #9933ff); }
 .Legendary { border:3px solid gold; background:linear-gradient(135deg, gold, #ffff99); animation:holo 2s infinite alternate; }
-@keyframes holo { 0% { box-shadow:0 0 10px gold;} 100% { box-shadow:0 0 30px gold; } }
-
-/* Inputs and Buttons */
-input, select, button { margin:5px 0; padding:5px; border-radius:5px; border:none; }
-button { cursor:pointer; }
-
-/* Map */
+@keyframes holo { 0% { box-shadow:0 0 10px gold;} 100% { box-shadow:0 0 30px gold;} }
+input, select, button { margin:5px 0; padding:5px; border-radius:5px; border:none;}
 #map { height:400px; width:100%; margin-top:1em; border-radius:12px; }
-
-/* Badge List */
 #badgeList li { margin:5px 0; }
+#modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
+#modalContent {background:#d6fff5;padding:20px;border-radius:12px;max-width:400px;position:relative;}
+#modalClose {position:absolute;top:5px;right:10px;cursor:pointer;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -75,7 +60,6 @@ button { cursor:pointer; }
 <button class="tab-btn" onclick="openTab('badges')">Badges</button>
 </nav>
 
-<!-- Log Tab -->
 <div id="log" class="tab active">
   <input id="animalName" placeholder="Enter common or scientific name">
   <input id="animalLocation" placeholder="Enter location (city or region)">
@@ -92,27 +76,42 @@ button { cursor:pointer; }
   <button onclick="logAnimal()">✨ Log Animal</button>
 </div>
 
-<!-- Catches Tab -->
 <div id="catches" class="tab">
   <div id="cards"></div>
   <div id="map"></div>
 </div>
 
-<!-- Badges Tab -->
 <div id="badges" class="tab">
   <ul id="badgeList"></ul>
 </div>
 
+<!-- Modal -->
+<div id="modal">
+  <div id="modalContent">
+    <span id="modalClose" onclick="closeModal()">X</span>
+    <div id="modalInner"></div>
+  </div>
+</div>
+
 <script>
-// Load data from localStorage
+// Load from localStorage
 let animals = JSON.parse(localStorage.getItem('animals')) || [];
 let badges = [];
 
-// Element + rarity arrays
 const elements = ["Fire","Water","Grass","Electric","Ice","Flying","Poison","Dark","Normal"];
 const rarities = ["Common","Uncommon","Rare","Epic","Legendary"];
 
-// Tab switching
+// Animal trait table
+const animalTraits = {
+  "humpback whale": {element:"Water", move:"Tail Slam", habitat:"Ocean", continent:"Global"},
+  "bald eagle": {element:"Flying", move:"Talon Strike", habitat:"Forests/Rivers", continent:"North America"},
+  "red fox": {element:"Normal", move:"Pounce", habitat:"Forests/Grasslands", continent:"Europe/Asia/North America"},
+  "lion": {element:"Dark", move:"Roar Bite", habitat:"Savannah", continent:"Africa"},
+  "polar bear": {element:"Ice", move:"Ice Swipe", habitat:"Arctic", continent:"Arctic"},
+  "mantis shrimp": {element:"Water", move:"Sonic Punch", habitat:"Ocean", continent:"Global"}
+};
+
+// Tabs
 function openTab(name){
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(name).classList.add('active');
@@ -120,8 +119,10 @@ function openTab(name){
   document.querySelector(`button[onclick="openTab('${name}')"]`).classList.add('active');
 }
 
-// Assign element based on name
+// Assign element
 function assignElement(name){
+  const trait = animalTraits[name.toLowerCase()];
+  if(trait) return trait.element;
   const n = name.toLowerCase();
   if(n.includes("shark") || n.includes("fish") || n.includes("dolphin")) return "Water";
   if(n.includes("eagle") || n.includes("sparrow") || n.includes("hawk")) return "Flying";
@@ -142,19 +143,35 @@ function assignRarity(){
   return "Legendary";
 }
 
-// Generate smart move
-function generateMove(name, element){
-  const n = name.toLowerCase();
-  if(element==="Water") return "Splash Strike";
-  if(element==="Flying") return "Sky Peck";
-  if(element==="Poison") return "Venom Bite";
-  if(element==="Dark") return "Shadow Pounce";
-  if(element==="Fire") return "Flame Burst";
-  if(element==="Ice") return "Frost Jab";
+// Generate move
+function generateMove(name){
+  const trait = animalTraits[name.toLowerCase()];
+  if(trait) return trait.move;
+  const el = assignElement(name);
+  if(el==="Water") return "Splash Strike";
+  if(el==="Flying") return "Sky Peck";
+  if(el==="Poison") return "Venom Bite";
+  if(el==="Dark") return "Shadow Pounce";
+  if(el==="Fire") return "Flame Burst";
+  if(el==="Ice") return "Frost Jab";
   return name + " Tackle";
 }
 
-// Log animal
+// Fetch Image from Wikimedia
+function fetchAnimalImage(name, callback){
+  const url = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=original&titles=${encodeURIComponent(name)}`;
+  fetch(url).then(res=>res.json()).then(data=>{
+    const pages = data.query.pages;
+    const page = Object.values(pages)[0];
+    if(page && page.original && page.original.source){
+      callback(page.original.source);
+    } else callback(`https://source.unsplash.com/200x200/?${encodeURIComponent(name)}`);
+  }).catch(err=>{
+    callback(`https://source.unsplash.com/200x200/?${encodeURIComponent(name)}`);
+  });
+}
+
+// Log Animal
 function logAnimal(){
   const nameInput = document.getElementById("animalName");
   const locInput = document.getElementById("animalLocation");
@@ -162,82 +179,88 @@ function logAnimal(){
   const name = nameInput.value.trim();
   if(!name) return alert("Enter an animal name!");
   const location = locInput.value.trim() || "Unknown";
-  const continent = contInput.value || "Unknown";
+  const continent = contInput.value || (animalTraits[name.toLowerCase()] ? animalTraits[name.toLowerCase()].continent : "Unknown");
   const element = assignElement(name);
   const rarity = assignRarity();
+  const move = generateMove(name);
+  const habitat = animalTraits[name.toLowerCase()] ? animalTraits[name.toLowerCase()].habitat : location;
 
-  const animal = {
-    name,
-    element,
-    rarity,
-    attack: Math.floor(Math.random()*100),
-    defense: Math.floor(Math.random()*100),
-    move: generateMove(name, element),
-    location,
-    continent,
-    image: "https://source.unsplash.com/200x200/?"+encodeURIComponent(name)
-  };
+  const animal = {id: Date.now(), name, element, rarity, attack:Math.floor(Math.random()*100), defense:Math.floor(Math.random()*100), move, habitat, continent, image:""};
 
-  animals.push(animal);
-  localStorage.setItem('animals', JSON.stringify(animals));
-  nameInput.value = ""; locInput.value = ""; contInput.value = "";
-  renderAnimals();
-  updateBadges();
-  renderMap();
+  fetchAnimalImage(name, img=>{
+    animal.image = img;
+    animals.push(animal);
+    localStorage.setItem('animals', JSON.stringify(animals));
+    nameInput.value=""; locInput.value=""; contInput.value="";
+    renderAnimals();
+    updateBadges();
+    renderMap();
+  });
 }
 
 // Render cards
 function renderAnimals(){
   const container = document.getElementById("cards");
-  container.innerHTML = "";
+  container.innerHTML="";
   animals.forEach(a=>{
-    container.innerHTML += `
-      <div class="card ${a.rarity}">
+    container.innerHTML+=`
+      <div class="card ${a.rarity}" onclick='showModal(${JSON.stringify(a)})'>
         <img src="${a.image}">
         <div class="element ${a.element}">${a.element}</div>
         <div class="rarity">${a.rarity}</div>
         <h3>${a.name}</h3>
-        <p>ATK: ${a.attack} | DEF: ${a.defense}</p>
-        <p>Move: ${a.move}</p>
-        <p>Habitat: ${a.location}</p>
-        <p>Continent: ${a.continent}</p>
-        <button onclick="releaseAnimal('${a.name}','${a.location}','${a.continent}')">Release Animal</button>
+        <p>ATK:${a.attack} DEF:${a.defense}</p>
+        <p>Move:${a.move}</p>
       </div>
     `;
   });
 }
 
-// Release animal
-function releaseAnimal(name, location, continent){
-  animals = animals.filter(a=>!(a.name===name && a.location===location && a.continent===continent));
+// Release
+function releaseAnimal(id){
+  animals = animals.filter(a=>a.id!==id);
   localStorage.setItem('animals', JSON.stringify(animals));
   renderAnimals();
   updateBadges();
   renderMap();
 }
 
+// Modal
+function showModal(animal){
+  document.getElementById('modal').style.display='flex';
+  document.getElementById('modalInner').innerHTML=`
+    <h2>${animal.name}</h2>
+    <img src="${animal.image}" style="width:100%;border-radius:8px;">
+    <p><strong>Element:</strong> ${animal.element}</p>
+    <p><strong>Rarity:</strong> ${animal.rarity}</p>
+    <p><strong>Attack:</strong> ${animal.attack} | <strong>Defense:</strong> ${animal.defense}</p>
+    <p><strong>Move:</strong> ${animal.move}</p>
+    <p><strong>Habitat:</strong> ${animal.habitat}</p>
+    <p><strong>Continent:</strong> ${animal.continent}</p>
+    <button onclick="releaseAnimal(${animal.id});closeModal()">Release Animal</button>
+  `;
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+
 // Badges
 function updateBadges(){
-  badges = [];
+  badges=[];
   if(animals.length>=1) badges.push("First Encounter");
   if(animals.length>=10) badges.push("Budding Naturalist");
   if(animals.length>=50) badges.push("Field Expert");
   if(animals.some(a=>a.rarity==="Legendary")) badges.push("Rare Find");
   if(animals.map(a=>a.element).filter((v,i,a)=>a.indexOf(v)===i).length===elements.length) badges.push("Elemental Master");
-  const badgeList = document.getElementById("badgeList");
-  badgeList.innerHTML = badges.map(b=>`<li>${b}</li>`).join("");
+  document.getElementById("badgeList").innerHTML=badges.map(b=>`<li>${b}</li>`).join("");
 }
 
 // Map
-let map = L.map('map').setView([20,0], 2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18}).addTo(map);
-let markers = [];
-
+let map = L.map('map').setView([20,0],2);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
+let markers=[];
 function renderMap(){
   markers.forEach(m=>map.removeLayer(m));
-  markers = [];
+  markers=[];
   animals.forEach(a=>{
-    // Fake geocoding: use random coordinates if continent unknown
     let coords;
     switch(a.continent){
       case "Africa": coords=[Math.random()*30-5, Math.random()*30]; break;
@@ -250,7 +273,7 @@ function renderMap(){
       default: coords=[Math.random()*180-90, Math.random()*360-180];
     }
     const marker = L.marker(coords).addTo(map);
-    marker.bindPopup(`<b>${a.name}</b><br>Element: ${a.element}<br>Move: ${a.move}<br>Habitat: ${a.location}`);
+    marker.bindPopup(`<b>${a.name}</b><br>Element: ${a.element}<br>Move: ${a.move}<br>Habitat: ${a.habitat}`);
     markers.push(marker);
   });
 }
@@ -259,7 +282,7 @@ function renderMap(){
 renderAnimals();
 updateBadges();
 renderMap();
-</script>
 
+</script>
 </body>
 </html>
