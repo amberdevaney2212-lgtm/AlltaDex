@@ -178,6 +178,17 @@ background:linear-gradient(#eaffff,#dff6ff);
 .card.flying{
 background:linear-gradient(#f0f0ff,#e5e5ff);
 }
+.card.dark{
+background:linear-gradient(#e8e8f5,#d6d6ef);
+}
+
+.card.poison{
+background:linear-gradient(#f3e4ff,#e4c8ff);
+}
+
+.card.bug{
+background:linear-gradient(#f0ffd8,#e0f5b8);
+}
 
 /* ELEMENT EFFECTS */
 
@@ -241,12 +252,41 @@ background:
 linear-gradient(90deg,transparent,rgba(200,200,255,.15),transparent);
 animation:windMove 6s linear infinite;
 }
-
 @keyframes windMove{
 from{background-position:-400px}
 to{background-position:400px}
 }
+.card.dark .card-overlay{
+background:
+radial-gradient(circle at 50% 40%, rgba(0,0,0,.15), transparent 70%);
+animation:darkPulse 6s infinite alternate;
+}
 
+@keyframes darkPulse{
+from{opacity:.2}
+to{opacity:.5}
+}
+.card.poison .card-overlay{
+background:
+radial-gradient(circle, rgba(180,0,255,.15), transparent 70%);
+animation:poisonMist 5s infinite alternate;
+}
+
+@keyframes poisonMist{
+from{opacity:.25}
+to{opacity:.55}
+}
+
+.card.bug .card-overlay{
+background:
+radial-gradient(circle, rgba(120,180,0,.15), transparent 70%);
+animation:bugRustle 4s infinite alternate;
+}
+
+@keyframes bugRustle{
+from{opacity:.3}
+to{opacity:.6}
+}
 /* controls */
 
 .controls{
@@ -301,6 +341,9 @@ border:2px solid #ccc;
 <option value="grass">Grass</option>
 <option value="ice">Ice</option>
 <option value="flying">Flying</option>
+<option value="dark">Dark</option>
+<option value="poison">Poison</option>
+<option value="bug">Bug</option>
 </select>
 </div>
 
@@ -319,7 +362,10 @@ fire:"🔥",
 water:"💧",
 grass:"🌿",
 ice:"❄️",
-flying:"🕊️"
+flying:"🕊️",
+dark:"🌙",
+poison:"☠️",
+bug:"🐛"
 }
 
 const continentIcons={
