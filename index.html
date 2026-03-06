@@ -451,7 +451,7 @@ for(let a of logged){
 
 if(search && !a.name.toLowerCase().includes(search))continue
 
-if(filter!="all" && a.type!=filter)continue
+if(filter!="all" && !(Array.isArray(a.type) ? a.type.includes(filter) : a.type==filter)) continue
 
 let img=await getImage(a.name)
 
@@ -489,7 +489,7 @@ onerror="this.style.display='none';this.nextElementSibling.style.display='flex';
 </div>
 
 <div class="footer">
-<span>${typeIcons[a.type]}</span>
+<span>${Array.isArray(a.type) ? a.type.map(t=>typeIcons[t]).join(" ") : typeIcons[a.type]}</span>
 <span>${continentIcons[a.continent]}</span>
 </div>
 
