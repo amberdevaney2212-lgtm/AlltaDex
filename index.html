@@ -60,30 +60,78 @@ justify-content:center;
 /* CARD */
 
 .card{
-border-radius:12px;
-padding:12px;
+border-radius:18px;
+padding:0;
 color:white;
-text-align:center;
 cursor:pointer;
-box-shadow:0 5px 12px rgba(0,0,0,0.3);
+box-shadow:0 8px 20px rgba(0,0,0,0.25);
+overflow:hidden;
+transition:transform 0.2s;
 }
 
-.grass{background:#4caf50;}
-.fire{background:#ff7043;}
-.water{background:#42a5f5;}
-.air{background:#90caf9;}
-.dark{background:#555;}
+.card:hover{
+transform:translateY(-4px);
+}
 
-.card img{
+/* TYPE COLORS */
+
+.grass{background:linear-gradient(180deg,#3dbb4a,#7dd56f);}
+.fire{background:linear-gradient(180deg,#ff7a45,#ffb347);}
+.water{background:linear-gradient(180deg,#42a5f5,#7ec8ff);}
+.air{background:linear-gradient(180deg,#8ecae6,#bde0fe);}
+.dark{background:linear-gradient(180deg,#555,#777);}
+
+/* HEADER */
+
+.cardTop{
+padding:10px;
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+font-size:14px;
+}
+
+/* IMAGE BOX */
+
+.imageBox{
+background:rgba(255,255,255,0.25);
+margin:10px;
+border-radius:12px;
+padding:10px;
+}
+
+.imageBox img{
 width:100%;
-height:130px;
+height:120px;
 object-fit:cover;
 border-radius:8px;
 background:white;
 }
 
-.card h3{
-margin:8px 0 0;
+/* BOTTOM INFO */
+
+.cardBottom{
+background:#f5f5f5;
+color:#333;
+padding:12px;
+text-align:left;
+}
+
+.cardBottom h3{
+margin:0;
+font-size:18px;
+}
+
+.science{
+font-style:italic;
+font-size:13px;
+color:#777;
+}
+
+.typeTag{
+margin-top:8px;
+font-size:12px;
+font-weight:bold;
 }
 
 /* MODAL */
@@ -264,9 +312,20 @@ card.className=`card ${a.type}`
 
 card.innerHTML=`
 
-<img src="${a.image}" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'">
+<div class="cardTop">
+<span>${a.type.toUpperCase()}</span>
+<span>🌿</span>
+</div>
 
+<div class="imageBox">
+<img src="${a.image}" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'">
+</div>
+
+<div class="cardBottom">
 <h3>${a.name}</h3>
+<div class="science">${a.scientific}</div>
+<div class="typeTag">Element: ${a.type}</div>
+</div>
 
 `
 
