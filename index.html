@@ -1,109 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WildDex v20</title>
+<title>WildDex Test</title>
 <style>
-body {
-  font-family: Arial; margin: 0; padding: 20px; text-align: center;
-  background: linear-gradient(#8fd3ff,#c9f2ff,#ecfbff);
-}
-h1 { font-size: 40px; margin-bottom: 10px; }
-.tabs button {
-  padding: 10px 20px; margin: 6px; border: none; border-radius: 20px;
-  background: white; cursor: pointer; font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,0,0,.15);
-}
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-.card {
-  position: relative;
-  border-radius: 16px;
-  padding: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0,0,0,.15);
-  transition: .25s;
-  cursor: pointer;
-}
-.card:hover { transform: scale(1.05); }
-.imgBox {
-  height: 140px;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.imgBox img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.placeholder {
-  font-size: 40px; opacity: .4; display: flex;
-  align-items: center; justify-content: center; height: 100%;
-}
-.element { font-size: 24px; margin-top: 6px; }
+body {font-family:Arial;margin:0;padding:20px;background:linear-gradient(#8fd3ff,#c9f2ff,#ecfbff);}
+h1{font-size:40px;text-align:center;margin-bottom:10px;}
+.tabs button{padding:10px 20px;margin:6px;border:none;border-radius:20px;background:white;cursor:pointer;font-weight:bold;box-shadow:0 4px 8px rgba(0,0,0,.15);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin-top:20px;}
+.card{position:relative;border-radius:16px;padding:12px;overflow:hidden;box-shadow:0 6px 12px rgba(0,0,0,.15);transition:.25s;cursor:pointer;}
+.card:hover{transform:scale(1.05);}
+.imgBox{height:140px;background:white;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.imgBox img{width:100%;height:100%;object-fit:cover;}
+.placeholder{font-size:40px;opacity:.4;display:flex;align-items:center;justify-content:center;height:100%;}
+.element{font-size:24px;margin-top:6px;}
 .grass{background:#6de06d;}
 .water{background:#63c4ff;}
 .fire{background:#ff8750;}
 .ice{background:#c8f2ff;}
 .flying{background:#b5d5ff;}
+.normal{background:#dcdcdc;}
 .uncommon{box-shadow:0 0 10px #4caf50;}
 .rare{box-shadow:0 0 14px #2196f3;}
 .legendary{box-shadow:0 0 20px gold;}
-.effect {
-  position: absolute; inset:0; pointer-events: none; opacity: .25; z-index:0;
-}
-.card *{ position: relative; z-index:1; }
-/* Grass leaves */
-.grass .effect{background:
-radial-gradient(circle at 20% 70%,rgba(255,255,255,.6),transparent),
-radial-gradient(circle at 80% 40%,rgba(255,255,255,.6),transparent);
-animation:leafMove 6s infinite linear;}
+.effect{position:absolute;inset:0;pointer-events:none;opacity:.25;z-index:0;}
+.card *{position:relative;z-index:1;}
+.grass .effect{background:radial-gradient(circle at 20% 70%,rgba(255,255,255,.6),transparent),radial-gradient(circle at 80% 40%,rgba(255,255,255,.6),transparent);animation:leafMove 6s infinite linear;}
 @keyframes leafMove{0%{transform:translateX(0)}50%{transform:translateX(10px)}100%{transform:translateX(0)}}
-/* Water ripple */
-.water .effect{background:
-radial-gradient(circle at 40% 40%,rgba(255,255,255,.7),transparent),
-radial-gradient(circle at 70% 70%,rgba(255,255,255,.5),transparent);
-animation:waterMove 5s infinite;}
+.water .effect{background:radial-gradient(circle at 40% 40%,rgba(255,255,255,.7),transparent),radial-gradient(circle at 70% 70%,rgba(255,255,255,.5),transparent);animation:waterMove 5s infinite;}
 @keyframes waterMove{0%{transform:translateY(0)}50%{transform:translateY(6px)}100%{transform:translateY(0)}}
-/* Fire glow */
-.fire .effect{background:
-radial-gradient(circle at 50% 80%,rgba(255,120,0,.8),transparent),
-radial-gradient(circle at 60% 60%,rgba(255,60,0,.7),transparent);
-animation:flameMove 3s infinite alternate;}
+.fire .effect{background:radial-gradient(circle at 50% 80%,rgba(255,120,0,.8),transparent),radial-gradient(circle at 60% 60%,rgba(255,60,0,.7),transparent);animation:flameMove 3s infinite alternate;}
 @keyframes flameMove{0%{transform:scale(1)}100%{transform:scale(1.1)}}
-/* Ice sparkle */
-.ice .effect{background:
-radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),transparent),
-radial-gradient(circle at 70% 70%,rgba(255,255,255,.6),transparent);
-animation:frostMove 5s infinite alternate;}
+.ice .effect{background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),transparent),radial-gradient(circle at 70% 70%,rgba(255,255,255,.6),transparent);animation:frostMove 5s infinite alternate;}
 @keyframes frostMove{0%{opacity:.3}100%{opacity:.7}}
-/* Wind */
-.flying .effect{background:
-linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);
-background-size:200% 100%; animation:windMove 4s infinite linear;}
+.flying .effect{background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);background-size:200% 100%;animation:windMove 4s infinite linear;}
 @keyframes windMove{0%{background-position:0}100%{background-position:200%}}
-.modal {
-  position: fixed; inset:0; background: rgba(0,0,0,.5);
-  display:none; align-items:center; justify-content:center;
-}
-.modalContent {
-  background:white; padding:20px; border-radius:14px; max-width:400px;
-}
-.release { background:#e53935; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; }
-.badge{background:white; padding:10px; margin:8px; border-radius:12px; display:inline-block; box-shadow:0 3px 6px rgba(0,0,0,.15);}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;}
+.modalContent{background:white;padding:20px;border-radius:14px;max-width:400px;text-align:left;}
+.release{background:#e53935;color:white;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;margin-top:10px;}
+.badge{background:white;padding:10px;margin:8px;border-radius:12px;display:inline-block;box-shadow:0 3px 6px rgba(0,0,0,.15);}
 </style>
 </head>
 <body>
-
-<h1>WildDex</h1>
+<h1>WildDex Test</h1>
 <div class="tabs">
   <button onclick="showTab('log')">Log</button>
   <button onclick="showTab('catches')">Catches</button>
@@ -116,6 +55,22 @@ background-size:200% 100%; animation:windMove 4s infinite linear;}
 </div>
 
 <div id="catchesTab" style="display:none">
+  <div>
+    <label>Filter Element: <select id="filterElement" onchange="renderCards()">
+      <option value="">All</option>
+      <option value="grass">🌿 Grass</option>
+      <option value="water">💧 Water</option>
+      <option value="fire">🔥 Fire</option>
+      <option value="ice">❄️ Ice</option>
+      <option value="flying">🕊 Flying</option>
+      <option value="normal">⚪ Normal</option>
+    </select></label>
+    <label>Filter Continent: <select id="filterContinent" onchange="renderCards()">
+      <option value="">All</option>
+      <option>Africa</option><option>Asia</option><option>Europe</option><option>North America</option>
+      <option>South America</option><option>Australia</option><option>Antarctica</option><option>Ocean</option><option>Arctic</option>
+    </select></label>
+  </div>
   <div class="cards" id="cards"></div>
 </div>
 
@@ -128,7 +83,7 @@ background-size:200% 100%; animation:windMove 4s infinite linear;}
 </div>
 
 <script>
-const elementSymbol={grass:"🌿",water:"💧",fire:"🔥",ice:"❄️",flying:"🕊"};
+const elementSymbol={grass:"🌿",water:"💧",fire:"🔥",ice:"❄️",flying:"🕊",normal:"⚪"};
 
 const animalsDB=[
 {name:"Blue Whale",scientific:"Balaenoptera musculus",type:"water",continent:"Ocean",rarity:"legendary",atk:95,def:90,img:"https://upload.wikimedia.org/wikipedia/commons/5/52/Blue_whale.jpg"},
@@ -136,7 +91,21 @@ const animalsDB=[
 {name:"Bengal Tiger",scientific:"Panthera tigris tigris",type:"fire",continent:"Asia",rarity:"rare",atk:90,def:70,img:"https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg"},
 {name:"Polar Bear",scientific:"Ursus maritimus",type:"ice",continent:"Arctic",rarity:"rare",atk:82,def:85,img:"https://upload.wikimedia.org/wikipedia/commons/e/e7/Polar_Bear_-_Alaska.jpg"},
 {name:"Golden Eagle",scientific:"Aquila chrysaetos",type:"flying",continent:"Europe",rarity:"uncommon",atk:65,def:55,img:"https://upload.wikimedia.org/wikipedia/commons/e/e7/Golden_Eagle.jpg"},
-{name:"Giant Panda",scientific:"Ailuropoda melanoleuca",type:"grass",continent:"Asia",rarity:"rare",atk:60,def:80,img:"https://upload.wikimedia.org/wikipedia/commons/0/0f/Grosser_Panda.JPG"}
+{name:"Giant Panda",scientific:"Ailuropoda melanoleuca",type:"grass",continent:"Asia",rarity:"rare",atk:60,def:80,img:"https://upload.wikimedia.org/wikipedia/commons/0/0f/Grosser_Panda.JPG"},
+{name:"African Elephant",scientific:"Loxodonta africana",type:"grass",continent:"Africa",rarity:"rare",atk:80,def:85,img:"https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg"},
+{name:"Emperor Penguin",scientific:"Aptenodytes forsteri",type:"ice",continent:"Antarctica",rarity:"rare",atk:50,def:70,img:"https://upload.wikimedia.org/wikipedia/commons/e/e0/Emperor_Penguin_Manchot_empereur.jpg"},
+{name:"Red Fox",scientific:"Vulpes vulpes",type:"fire",continent:"Europe",rarity:"uncommon",atk:60,def:55,img:"https://upload.wikimedia.org/wikipedia/commons/1/17/Vulpes_vulpes_Luc_Viatour.jpg"},
+{name:"Green Finch",scientific:"Chloris chloris",type:"flying",continent:"Europe",rarity:"uncommon",atk:40,def:30,img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Chloris_chloris01.jpg"},
+{name:"Zebra",scientific:"Equus quagga",type:"grass",continent:"Africa",rarity:"uncommon",atk:55,def:60,img:"https://upload.wikimedia.org/wikipedia/commons/0/0f/Plains_Zebra_Equus_quagga.jpg"},
+{name:"Dolphin",scientific:"Delphinus delphis",type:"water",continent:"Ocean",rarity:"rare",atk:70,def:60,img:"https://upload.wikimedia.org/wikipedia/commons/6/63/Common_dolphin_2.jpg"},
+{name:"Giraffe",scientific:"Giraffa camelopardalis",type:"grass",continent:"Africa",rarity:"rare",atk:60,def:65,img:"https://upload.wikimedia.org/wikipedia/commons/9/9f/Giraffa_camelopardalis_angolensis.jpg"},
+{name:"Koala",scientific:"Phascolarctos cinereus",type:"grass",continent:"Australia",rarity:"uncommon",atk:45,def:50,img:"https://upload.wikimedia.org/wikipedia/commons/4/49/Koala_climbing_tree.jpg"},
+{name:"American Bison",scientific:"Bison bison",type:"grass",continent:"North America",rarity:"rare",atk:75,def:70,img:"https://upload.wikimedia.org/wikipedia/commons/3/3f/American_Bison_k5680-1.jpg"},
+{name:"Humpback Whale",scientific:"Megaptera novaeangliae",type:"water",continent:"Ocean",rarity:"rare",atk:80,def:75,img:"https://upload.wikimedia.org/wikipedia/commons/0/08/Humpback_whale_porpoising.jpg"},
+{name:"Snowy Owl",scientific:"Bubo scandiacus",type:"flying",continent:"Arctic",rarity:"rare",atk:50,def:40,img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Snowy_Owl_2.jpg"},
+{name:"Cheetah",scientific:"Acinonyx jubatus",type:"fire",continent:"Africa",rarity:"rare",atk:85,def:60,img:"https://upload.wikimedia.org/wikipedia/commons/5/56/Cheetah_in_the_Masai_Mara.jpg"},
+{name:"Brown Bear",scientific:"Ursus arctos",type:"grass",continent:"Europe",rarity:"rare",atk:80,def:80,img:"https://upload.wikimedia.org/wikipedia/commons/7/7f/Brown_bear.jpg"},
+{name:"King Penguin",scientific:"Aptenodytes patagonicus",type:"ice",continent:"Antarctica",rarity:"rare",atk:55,def:60,img:"https://upload.wikimedia.org/wikipedia/commons/0/09/King_Penguin_Manchot_royal.jpg"}
 ];
 
 let catches=JSON.parse(localStorage.getItem("wilddex")||"[]");
@@ -176,7 +145,10 @@ function searchAnimals(){
 function renderCards(){
   let container=document.getElementById('cards');
   container.innerHTML="";
-  catches.forEach(a=>{
+  let elFilter=document.getElementById('filterElement')?.value||"";
+  let contFilter=document.getElementById('filterContinent')?.value||"";
+  catches.filter(a=>(!elFilter||a.type===elFilter)&&(!contFilter||a.continent===contFilter))
+  .forEach(a=>{
     let card=document.createElement('div');
     card.className=`card ${a.type} ${a.rarity}`;
     card.innerHTML=`
@@ -208,6 +180,7 @@ function openModal(a){
     <p>${a.continent}</p>
     <p>ATK ${a.atk}</p>
     <p>DEF ${a.def}</p>
+    <p>Rarity: ${a.rarity}</p>
     <button class="release" onclick="releaseAnimal('${a.name}')">Release Animal</button>
     <br><br><button onclick="document.getElementById('modal').style.display='none'">Close</button>
   `;
@@ -230,7 +203,7 @@ function updateBadges(){
   if(catches.length>=5) badgesDiv.innerHTML+=`<div class="badge">🐾 Beginner Tracker</div>`;
   if(continents.length>=3) badgesDiv.innerHTML+=`<div class="badge">🌍 Explorer</div>`;
   if(continents.length>=5) badgesDiv.innerHTML+=`<div class="badge">🌎 World Naturalist</div>`;
-  if(elements.length>=5) badgesDiv.innerHTML+=`<div class="badge">🔥 Element Master</div>`;
+  if(elements.length>=3) badgesDiv.innerHTML+=`<div class="badge">🔥 Element Master</div>`;
   if(legendary) badgesDiv.innerHTML+=`<div class="badge">👑 Legendary Encounter</div>`;
 }
 
