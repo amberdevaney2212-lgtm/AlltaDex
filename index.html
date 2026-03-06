@@ -352,7 +352,26 @@ datalist.appendChild(o)
 
 let logged=[]
 
-function logAnimal(){
+function function logAnimal(){
+
+let name=document.getElementById("animalInput").value
+
+let animal=animals.find(a=>a.name===name)
+
+if(!animal)return
+
+/* prevent duplicates */
+
+if(logged.some(a=>a.name===name)){
+alert("This animal has already been logged.")
+return
+}
+
+logged.push(animal)
+
+renderCollection()
+updateBadges()
+}
 
 let name=document.getElementById("animalInput").value
 
