@@ -38,16 +38,10 @@ font-weight:bold;
 .section{display:none;padding:20px;}
 .active{display:block}
 
-select,button{
-padding:10px;
-font-size:16px;
-margin:5px;
-}
-
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fill,200px);
-gap:15px;
+grid-template-columns:repeat(auto-fill,220px);
+gap:18px;
 justify-content:center;
 }
 
@@ -55,21 +49,35 @@ justify-content:center;
 
 .card{
 position:relative;
-border-radius:12px;
-padding:10px;
+border-radius:14px;
+padding:12px;
 color:white;
 text-align:center;
-box-shadow:0 4px 10px rgba(0,0,0,0.3);
 overflow:hidden;
+cursor:pointer;
+box-shadow:0 6px 14px rgba(0,0,0,0.35);
 }
 
-/* Element Colors */
+/* ELEMENT COLORS */
 
-.grass{background:#34c759;}
-.fire{background:#ff6b3d;}
+.grass{background:#3edc81;}
+.fire{background:#ff7a3d;}
 .water{background:#3da5ff;}
-.air{background:#9ad9ff;}
+.air{background:#a6e1ff;}
 .dark{background:#444;}
+
+/* PARTICLE LAYER */
+
+.particles{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:0;
+overflow:hidden;
+}
 
 /* IMAGE */
 
@@ -77,99 +85,97 @@ overflow:hidden;
 width:100%;
 height:120px;
 object-fit:cover;
-border-radius:8px;
+border-radius:10px;
 background:white;
 position:relative;
 z-index:2;
 }
 
-/* EFFECT LAYER */
+.card h3{
+margin:6px 0 0;
+position:relative;
+z-index:2;
+}
 
-.effect{
+/* GRASS PARTICLES */
+
+.grass .particles span{
 position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-opacity:0.25;
-z-index:1;
-pointer-events:none;
+width:6px;
+height:6px;
+background:rgba(255,255,255,0.6);
+border-radius:2px;
+animation:leafFloat 8s linear infinite;
 }
 
-/* GRASS LEAVES */
-
-.grass .effect{
-background:
-radial-gradient(circle at 20% 40%,rgba(255,255,255,0.4) 2px,transparent 3px),
-radial-gradient(circle at 70% 60%,rgba(255,255,255,0.3) 2px,transparent 3px);
-animation:leafMove 8s linear infinite;
+@keyframes leafFloat{
+0%{transform:translateY(120px) rotate(0)}
+100%{transform:translateY(-40px) rotate(360deg)}
 }
 
-@keyframes leafMove{
-0%{transform:translateY(0)}
-50%{transform:translateY(-6px)}
-100%{transform:translateY(0)}
+/* FIRE PARTICLES */
+
+.fire .particles span{
+position:absolute;
+width:4px;
+height:4px;
+background:orange;
+border-radius:50%;
+animation:ember 3s linear infinite;
 }
 
-/* FIRE */
-
-.fire .effect{
-background:
-radial-gradient(circle at 50% 80%,rgba(255,200,0,0.6),transparent 70%);
-animation:fireFlicker 2s infinite alternate;
+@keyframes ember{
+0%{transform:translateY(120px);opacity:1}
+100%{transform:translateY(-20px);opacity:0}
 }
 
-@keyframes fireFlicker{
-from{opacity:0.2}
-to{opacity:0.35}
+/* WATER PARTICLES */
+
+.water .particles span{
+position:absolute;
+width:5px;
+height:5px;
+background:rgba(255,255,255,0.6);
+border-radius:50%;
+animation:bubble 6s linear infinite;
 }
 
-/* WATER */
-
-.water .effect{
-background:repeating-linear-gradient(
-0deg,
-rgba(255,255,255,0.2) 0px,
-rgba(255,255,255,0.2) 2px,
-transparent 3px,
-transparent 6px
-);
-animation:wave 6s linear infinite;
+@keyframes bubble{
+0%{transform:translateY(130px);opacity:0}
+30%{opacity:1}
+100%{transform:translateY(-30px);opacity:0}
 }
 
-@keyframes wave{
-from{background-position:0 0}
-to{background-position:0 40px}
-}
+/* AIR PARTICLES */
 
-/* AIR */
-
-.air .effect{
-background:linear-gradient(
-90deg,
-transparent,
-rgba(255,255,255,0.3),
-transparent
-);
+.air .particles span{
+position:absolute;
+width:20px;
+height:2px;
+background:rgba(255,255,255,0.5);
 animation:wind 4s linear infinite;
 }
 
 @keyframes wind{
-from{transform:translateX(-100%)}
-to{transform:translateX(100%)}
+0%{transform:translateX(-40px)}
+100%{transform:translateX(260px)}
 }
 
-/* DARK */
+/* DARK PARTICLES */
 
-.dark .effect{
-background:radial-gradient(circle,rgba(0,0,0,0.6),transparent 70%);
-animation:darkPulse 5s infinite;
+.dark .particles span{
+position:absolute;
+width:8px;
+height:8px;
+background:rgba(0,0,0,0.5);
+border-radius:50%;
+animation:shadow 6s linear infinite;
 }
 
-@keyframes darkPulse{
-0%{opacity:0.2}
-50%{opacity:0.35}
-100%{opacity:0.2}
+@keyframes shadow{
+0%{transform:scale(0.5);opacity:0.3}
+50%{transform:scale(1.3);opacity:0.6}
+100%{transform:scale(0.5);opacity:0.3}
 }
 
 </style>
@@ -184,7 +190,7 @@ animation:darkPulse 5s infinite;
 <div class="tab" onclick="openTab('catches')">Catches</div>
 </div>
 
-<!-- LOG TAB -->
+<!-- LOG -->
 
 <div id="log" class="section active">
 
@@ -196,7 +202,7 @@ animation:darkPulse 5s infinite;
 
 </div>
 
-<!-- CATCH TAB -->
+<!-- CATCHES -->
 
 <div id="catches" class="section">
 <div class="grid" id="grid"></div>
@@ -204,45 +210,21 @@ animation:darkPulse 5s infinite;
 
 <script>
 
-/* DATABASE (5 animals only for testing) */
+/* TEST DATABASE */
 
-const animals = [
+const animals=[
 
-{
-name:"Blue Whale",
-type:"water",
-image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Bluewhale2.jpg"
-},
-
-{
-name:"Tiger",
-type:"fire",
-image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg"
-},
-
-{
-name:"Bald Eagle",
-type:"air",
-image:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Bald_Eagle_Portrait.jpg"
-},
-
-{
-name:"Oak Tree Frog",
-type:"grass",
-image:"https://upload.wikimedia.org/wikipedia/commons/7/7b/Oak_treefrog.jpg"
-},
-
-{
-name:"Lesser Horseshoe Bat",
-type:"dark",
-image:"https://upload.wikimedia.org/wikipedia/commons/f/f2/Rhinolophus_hipposideros.jpg"
-}
+{name:"Blue Whale",type:"water",image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Bluewhale2.jpg"},
+{name:"Tiger",type:"fire",image:"https://upload.wikimedia.org/wikipedia/commons/5/56/Tiger.50.jpg"},
+{name:"Bald Eagle",type:"air",image:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Bald_Eagle_Portrait.jpg"},
+{name:"Oak Tree Frog",type:"grass",image:"https://upload.wikimedia.org/wikipedia/commons/7/7b/Oak_treefrog.jpg"},
+{name:"Lesser Horseshoe Bat",type:"dark",image:"https://upload.wikimedia.org/wikipedia/commons/f/f2/Rhinolophus_hipposideros.jpg"}
 
 ]
 
-let logged = JSON.parse(localStorage.getItem("wilddex")) || []
+let logged=JSON.parse(localStorage.getItem("wilddex"))||[]
 
-/* Populate dropdown */
+/* Dropdown */
 
 const select=document.getElementById("animalSelect")
 
@@ -259,7 +241,7 @@ let name=select.value
 if(!name)return
 
 if(logged.find(a=>a.name===name)){
-alert("Already logged!")
+alert("Already logged")
 return
 }
 
@@ -273,7 +255,25 @@ render()
 
 }
 
-/* Render cards */
+/* PARTICLE GENERATOR */
+
+function particleHTML(){
+
+let html=""
+
+for(let i=0;i<10;i++){
+
+let x=Math.random()*200
+let delay=Math.random()*5
+
+html+=`<span style="left:${x}px;animation-delay:${delay}s"></span>`
+
+}
+
+return html
+}
+
+/* RENDER */
 
 function render(){
 
@@ -289,7 +289,7 @@ card.className=`card ${a.type}`
 
 card.innerHTML=`
 
-<div class="effect"></div>
+<div class="particles">${particleHTML()}</div>
 
 <img src="${a.image}" onerror="this.src=''">
 
@@ -305,7 +305,7 @@ grid.appendChild(card)
 
 render()
 
-/* Tabs */
+/* TABS */
 
 function openTab(id){
 
