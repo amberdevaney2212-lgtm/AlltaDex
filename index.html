@@ -5,6 +5,7 @@
 <title>WildDex</title>
 
 <style>
+
 body{
 font-family:Arial;
 margin:0;
@@ -65,6 +66,11 @@ box-shadow:0 8px 20px rgba(0,0,0,0.25);
 cursor:pointer;
 display:flex;
 flex-direction:column;
+transition:transform .2s;
+}
+
+.card:hover{
+transform:scale(1.05);
 }
 
 .card img{
@@ -101,6 +107,23 @@ font-size:18px;
 .grass{background:linear-gradient(#66bb6a,#9ccc65);}
 .ice{background:linear-gradient(#81d4fa,#b3e5fc);}
 .flying{background:linear-gradient(#90caf9,#64b5f6);}
+.dark{background:linear-gradient(#616161,#424242);}
+
+/* Rarity glow */
+
+.common{}
+
+.rare{
+box-shadow:0 0 12px #4fc3f7,0 8px 20px rgba(0,0,0,0.25);
+}
+
+.epic{
+box-shadow:0 0 16px #ba68c8,0 8px 20px rgba(0,0,0,0.25);
+}
+
+.legendary{
+box-shadow:0 0 20px gold,0 8px 20px rgba(0,0,0,0.25);
+}
 
 .modal{
 display:none;
@@ -174,7 +197,7 @@ const database=[
 {
 name:"African Lion",
 scientific:"Panthera leo",
-type:"fire",
+type:["fire"],
 continent:"Africa",
 image:"https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg"
 },
@@ -182,7 +205,7 @@ image:"https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namib
 {
 name:"Blue Whale",
 scientific:"Balaenoptera musculus",
-type:"water",
+type:["water"],
 continent:"Ocean",
 image:"https://upload.wikimedia.org/wikipedia/commons/5/53/Bluewhale2.jpg"
 },
@@ -190,7 +213,7 @@ image:"https://upload.wikimedia.org/wikipedia/commons/5/53/Bluewhale2.jpg"
 {
 name:"Emperor Penguin",
 scientific:"Aptenodytes forsteri",
-type:"ice",
+type:["ice","water"],
 continent:"Antarctica",
 image:"https://upload.wikimedia.org/wikipedia/commons/e/e0/Emperor_Penguin_Manchot_empereur.jpg"
 },
@@ -198,7 +221,7 @@ image:"https://upload.wikimedia.org/wikipedia/commons/e/e0/Emperor_Penguin_Manch
 {
 name:"Bald Eagle",
 scientific:"Haliaeetus leucocephalus",
-type:"flying",
+type:["flying"],
 continent:"North America",
 image:"https://upload.wikimedia.org/wikipedia/commons/1/14/Bald_Eagle_Portrait.jpg"
 },
@@ -206,9 +229,17 @@ image:"https://upload.wikimedia.org/wikipedia/commons/1/14/Bald_Eagle_Portrait.j
 {
 name:"African Elephant",
 scientific:"Loxodonta africana",
-type:"grass",
+type:["grass"],
 continent:"Africa",
 image:"https://upload.wikimedia.org/wikipedia/commons/3/37/African_Bush_Elephant.jpg"
+},
+
+{
+name:"Lesser Horseshoe Bat",
+scientific:"Rhinolophus hipposideros",
+type:["dark","flying"],
+continent:"Europe",
+image:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Rhinolophus_hipposideros.jpg"
 }
 
 ]
@@ -218,12 +249,14 @@ fire:"🔥",
 water:"💧",
 grass:"🌿",
 ice:"❄️",
-flying:"🕊️"
+flying:"🕊️",
+dark:"🌙"
 }
 
 const continentIcons={
 Africa:"🌍",
 "North America":"🌎",
+Europe:"🌍",
 Antarctica:"❄️",
 Ocean:"🌊"
 }
@@ -242,6 +275,22 @@ list.appendChild(option)
 })
 
 render()
+
+}
+
+function random(min,max){
+return Math.floor(Math.random()*(max-min)+min)
+}
+
+function getRarity(){
+
+let r=Math.random()
+
+if(r<0.6) return "common"
+if(r<0.85) return "rare"
+if(r<0.97) return "epic"
+
+return "legendary"
 
 }
 
@@ -265,8 +314,9 @@ return
 
 let animal={
 ...data,
-atk:Math.floor(Math.random()*80)+20,
-def:Math.floor(Math.random()*80)+20
+atk:random(20,100),
+def:random(20,100),
+rarity:getRarity()
 }
 
 animals.push(animal)
@@ -284,10 +334,14 @@ grid.innerHTML=""
 
 animals.forEach((a,i)=>{
 
+let primary=a.type[0]
+
 let card=document.createElement("div")
-card.className="card "+a.type
+card.className="card "+primary+" "+a.rarity
 
 card.onclick=()=>openModal(i)
+
+let types=a.type.map(t=>typeIcons[t]).join(" ")
 
 card.innerHTML=`
 
@@ -304,7 +358,7 @@ card.innerHTML=`
 
 <div class="footer">
 
-<span>${typeIcons[a.type]}</span>
+<span>${types}</span>
 <span>${continentIcons[a.continent]}</span>
 
 </div>
@@ -350,7 +404,7 @@ modalIndex=i
 
 let a=animals[i]
 
-let modal=document.getElementById("modal")
+let types=a.type.map(t=>typeIcons[t]).join(" ")
 
 document.getElementById("modalContent").innerHTML=`
 
@@ -363,12 +417,13 @@ document.getElementById("modalContent").innerHTML=`
 <p>DEF ${a.def}</p>
 <p>HP ${a.atk+a.def}</p>
 
-<p>Type ${typeIcons[a.type]}</p>
+<p>Type ${types}</p>
 <p>Continent ${continentIcons[a.continent]}</p>
+<p>Rarity ${a.rarity}</p>
 
 `
 
-modal.style.display="flex"
+document.getElementById("modal").style.display="flex"
 
 }
 
