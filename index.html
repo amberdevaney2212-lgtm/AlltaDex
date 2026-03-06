@@ -5,320 +5,172 @@
 <title>WildDex</title>
 
 <style>
-
 body{
-font-family:Arial;
-background:#eef3f6;
-margin:0;
-text-align:center;
+  font-family:Arial;
+  background:#eef3f6;
+  margin:0;
+  text-align:center;
 }
-
 h1{margin-top:15px;}
-
 .tabs{
-display:flex;
-justify-content:center;
-gap:10px;
-margin:10px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:10px;
 }
-
 .tab{
-padding:8px 14px;
-border-radius:10px;
-background:#ddd;
-cursor:pointer;
+  padding:8px 14px;
+  border-radius:10px;
+  background:#ddd;
+  cursor:pointer;
 }
-
 .tab.active{background:#bbb;}
-
 .page{display:none;}
 .page.active{display:block;}
-
 .grid{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-justify-content:center;
-padding:20px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  justify-content:center;
+  padding:20px;
 }
-
 .card{
-width:220px;
-height:340px;
-border-radius:16px;
-overflow:hidden;
-position:relative;
-border:2px solid rgba(0,0,0,.2);
-transition:.2s;
-color:#111;
+  width:220px;
+  height:340px;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+  border:2px solid rgba(0,0,0,.2);
+  transition:.2s;
+  color:#111;
 }
-
 .card:hover{transform:scale(1.03)}
-
 .card-header{
-display:flex;
-justify-content:space-between;
-padding:6px 8px;
-font-weight:bold;
-font-size:14px;
+  display:flex;
+  justify-content:space-between;
+  padding:6px 8px;
+  font-weight:bold;
+  font-size:14px;
 }
-
 .image-container{
-width:100%;
-height:160px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:white;
-border-bottom:2px solid rgba(0,0,0,.1);
-overflow:hidden;
-position:relative;
+  width:100%;
+  height:160px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:white;
+  border-bottom:2px solid rgba(0,0,0,.1);
+  overflow:hidden;
+  position:relative;
 }
-
 .image-container img{
-width:100%;
-height:100%;
-object-fit:cover;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
-
 .no-image{
-position:absolute;
-font-size:70px;
-display:none;
-align-items:center;
-justify-content:center;
-width:100%;
-height:100%;
+  position:absolute;
+  font-size:70px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
 }
-
 .card-body{
-padding:8px;
-position:relative;
-z-index:2;
+  padding:8px;
+  position:relative;
+  z-index:2;
 }
-
 .scientific{
-font-style:italic;
-font-size:13px;
-opacity:.7;
-margin-bottom:6px;
+  font-style:italic;
+  font-size:13px;
+  opacity:.7;
+  margin-bottom:6px;
 }
-
 .stats{
-display:flex;
-justify-content:space-between;
-margin-top:6px;
-font-size:14px;
+  display:flex;
+  justify-content:space-between;
+  margin-top:6px;
+  font-size:14px;
 }
-
 .footer{
-display:flex;
-justify-content:space-between;
-margin-top:6px;
-font-size:18px;
+  display:flex;
+  justify-content:space-between;
+  margin-top:6px;
+  font-size:18px;
 }
-
 /* overlay */
-
 .card-overlay{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:1;
-pointer-events:none;
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:1;
+  pointer-events:none;
 }
-
 /* rarity glow */
-
 .card.common{box-shadow:none;}
-
 .card.uncommon{
-box-shadow:0 0 10px rgba(0,200,255,.4);
+  box-shadow:0 0 10px rgba(0,200,255,.4);
 }
-
 .card.rare{
-box-shadow:
-0 0 12px rgba(255,150,0,.6),
-0 0 20px rgba(255,150,0,.4);
+  box-shadow:0 0 12px rgba(255,150,0,.6),0 0 20px rgba(255,150,0,.4);
 }
-
 .card.legendary{
-box-shadow:
-0 0 18px rgba(255,215,0,.9),
-0 0 30px rgba(255,215,0,.6),
-0 0 45px rgba(255,215,0,.3);
-animation:legendPulse 3s infinite alternate;
+  box-shadow:0 0 18px rgba(255,215,0,.9),0 0 30px rgba(255,215,0,.6),0 0 45px rgba(255,215,0,.3);
+  animation:legendPulse 3s infinite alternate;
 }
-
 @keyframes legendPulse{
-from{filter:brightness(1)}
-to{filter:brightness(1.15)}
+  from{filter:brightness(1)}
+  to{filter:brightness(1.15)}
 }
-
 /* ELEMENT COLORS */
-
-.card.fire{
-background:linear-gradient(#ffe5d0,#ffd0b0);
-}
-
-.card.water{
-background:linear-gradient(#dff4ff,#c8eaff);
-}
-
-.card.grass{
-background:linear-gradient(#e4ffd8,#d0f5c2);
-}
-
-.card.ice{
-background:linear-gradient(#eaffff,#dff6ff);
-}
-
-.card.flying{
-background:linear-gradient(#f0f0ff,#e5e5ff);
-}
-.card.dark{
-background:linear-gradient(#fbf0ff,#aa91ba);
-}
-
-.card.poison{
-background:linear-gradient(#f3e4ff,#e4c8ff);
-}
-.card.dark.flying{
-background:linear-gradient(#e3e3e3,#9b74b0);
-}
-
-.card.poison.fire{
-background:linear-gradient(#f3e4ff,#ffd0b0);
-}
-
-.card.bug.flying{
-background:linear-gradient(#f0ffd8,#e5e5ff);
-}
-.card.bug{
-background:linear-gradient(#f0ffd8,#e0f5b8);
-}
-
+.card.fire{background:linear-gradient(#ffe5d0,#ffd0b0);}
+.card.water{background:linear-gradient(#dff4ff,#c8eaff);}
+.card.grass{background:linear-gradient(#e4ffd8,#d0f5c2);}
+.card.ice{background:linear-gradient(#eaffff,#dff6ff);}
+.card.flying{background:linear-gradient(#f0f0ff,#e5e5ff);}
+.card.dark{background:linear-gradient(#dcdcdc,#bfbfbf);}
+.card.poison{background:linear-gradient(#f3e4ff,#e0c8ff);}
+.card.bug{background:linear-gradient(#f0ffd8,#d5f0c2);}
 /* ELEMENT EFFECTS */
-
 /* fire */
-
 .card.fire .card-overlay{
-background:
-radial-gradient(circle at 50% 100%, rgba(255,120,0,.25), transparent 70%),
-radial-gradient(circle at 60% 110%, rgba(255,60,0,.2), transparent 70%);
-animation:fireFlicker 2s infinite alternate;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(255,120,0,.25), transparent 70%),
+    radial-gradient(circle at 60% 110%, rgba(255,60,0,.2), transparent 70%);
+  animation:fireFlicker 2s infinite alternate;
 }
-
-@keyframes fireFlicker{
-from{transform:translateY(0)}
-to{transform:translateY(-3px) scale(1.03)}
-}
-
+@keyframes fireFlicker{from{transform:translateY(0)}to{transform:translateY(-3px) scale(1.03)}}
 /* water */
-
 .card.water .card-overlay{
-background:
-linear-gradient(120deg,transparent,rgba(0,150,255,.15),transparent);
-animation:waterFlow 4s linear infinite;
+  background:linear-gradient(120deg,transparent,rgba(0,150,255,.15),transparent);
+  animation:waterFlow 4s linear infinite;
 }
-
-@keyframes waterFlow{
-from{background-position:-200px}
-to{background-position:200px}
-}
-
+@keyframes waterFlow{from{background-position:-200px}to{background-position:200px}}
 /* grass */
-
 .card.grass .card-overlay{
-background:
-radial-gradient(circle at 50% 100%, rgba(255,120,0,.25), transparent 70%),
-radial-gradient(circle at 60% 110%, rgba(255,60,0,.2), transparent 70%);
-animation:grassSway 2s infinite alternate;
+  background:radial-gradient(circle, rgba(0,200,0,.15), transparent 70%);
+  animation:grassBreathe 5s infinite alternate;
 }
-
-@keyframes grassSway{
-from{transform:translateY(0)}
-to{transform:translateY(-3px) scale(1.03)}
-
-}
-
+@keyframes grassBreathe{from{opacity:.3}to{opacity:.6}}
 /* ice */
-
 .card.ice .card-overlay{
-background:
-linear-gradient(60deg,transparent,rgba(200,255,255,.25),transparent);
-animation:iceShine 5s linear infinite;
+  background:linear-gradient(60deg,transparent,rgba(200,255,255,.25),transparent);
+  animation:iceShine 5s linear infinite;
 }
-
-@keyframes iceShine{
-from{background-position:-300px}
-to{background-position:300px}
-}
-
+@keyframes iceShine{from{background-position:-300px}to{background-position:300px}}
 /* flying */
-
 .card.flying .card-overlay{
-background:
-linear-gradient(90deg,transparent,rgba(200,200,255,.15),transparent);
-animation:windMove 6s linear infinite;
+  background:linear-gradient(90deg,transparent,rgba(200,200,255,.15),transparent);
+  animation:windMove 6s linear infinite;
 }
-@keyframes windMove{
-from{background-position:-400px}
-to{background-position:400px}
-}
-.card.dark .card-overlay{
-background:
-radial-gradient(circle at 50% 40%, rgba(0,0,0,.15), transparent 70%);
-animation:darkPulse 6s infinite alternate;
-}
-
-@keyframes darkPulse{
-from{opacity:.2}
-to{opacity:.5}
-}
-.card.poison .card-overlay{
-background:
-radial-gradient(circle, rgba(180,0,255,.15), transparent 70%);
-animation:poisonMist 5s infinite alternate;
-}
-
-@keyframes poisonMist{
-from{opacity:.25}
-to{opacity:.55}
-}
-
-.card.bug .card-overlay{
-background:
-radial-gradient(circle, rgba(120,180,0,.15), transparent 70%);
-animation:bugRustle 4s infinite alternate;
-}
-
-@keyframes bugRustle{
-from{opacity:.3}
-to{opacity:.6}
-}
-/* controls */
-
-.controls{
-margin-top:10px;
-}
-
-.controls input, .controls select{
-padding:6px;
-margin:4px;
-}
-
-.badge{
-background:white;
-padding:10px;
-border-radius:10px;
-margin:10px auto;
-width:220px;
-border:2px solid #ccc;
-}
-
+@keyframes windMove{from{background-position:-400px}to{background-position:400px}}
+.controls{margin-top:10px;}
+.controls input, .controls select{padding:6px;margin:4px;}
+.badge{background:white;padding:10px;border-radius:10px;margin:10px auto;width:220px;border:2px solid #ccc;}
 </style>
 </head>
 
@@ -333,19 +185,14 @@ border:2px solid #ccc;
 </div>
 
 <div id="log" class="page active">
-
 <input id="animalInput" list="animals" placeholder="Log animal">
 <datalist id="animals"></datalist>
-
 <button onclick="logAnimal()">Log</button>
-
 </div>
 
 <div id="catches" class="page">
-
 <div class="controls">
 <input id="searchBox" placeholder="Search animals" oninput="renderCollection()">
-
 <select id="filterElement" onchange="renderCollection()">
 <option value="all">All Elements</option>
 <option value="fire">Fire</option>
@@ -358,9 +205,7 @@ border:2px solid #ccc;
 <option value="bug">Bug</option>
 </select>
 </div>
-
 <div id="collection" class="grid"></div>
-
 </div>
 
 <div id="badges" class="page">
@@ -368,7 +213,6 @@ border:2px solid #ccc;
 </div>
 
 <script>
-
 const typeIcons={
 fire:"🔥",
 water:"💧",
@@ -379,7 +223,6 @@ dark:"🌙",
 poison:"☠️",
 bug:"🐛"
 }
-
 const continentIcons={
 Africa:"🌍",
 Europe:"🌍",
@@ -390,165 +233,122 @@ Australia:"🦘",
 Antarctica:"🧊"
 }
 
+// Animal database
 const animals=[
-
 {name:"African Lion",scientific:"Panthera leo",type:"fire",continent:"Africa",rarity:"rare",atk:80,def:70,move:"Flame Pounce"},
 {name:"Bald Eagle",scientific:"Haliaeetus leucocephalus",type:"flying",continent:"NorthAmerica",rarity:"uncommon",atk:60,def:50,move:"Sky Dive"},
 {name:"Polar Bear",scientific:"Ursus maritimus",type:"ice",continent:"Antarctica",rarity:"rare",atk:75,def:80,move:"Frozen Swipe"},
-{name:"Poison Dart Frog",scientific:"Dendrobatidae",type:"grass",continent:"SouthAmerica",rarity:"uncommon",atk:40,def:30,move:"Toxic Jump"},
+{name:"Poison Dart Frog",scientific:"Dendrobatidae",type:"poison",continent:"SouthAmerica",rarity:"uncommon",atk:40,def:30,move:"Toxic Jump"},
 {name:"Blue Whale",scientific:"Balaenoptera musculus",type:"water",continent:"Asia",rarity:"legendary",atk:90,def:90,move:"Ocean Surge"},
-
-// NEW 
-{name:"Lesser Horseshoe Bat",scientific:"Rhinolophus hipposideros",type:"dark",continent:"Europe",rarity:"uncommon",atk:35,def:30,move:"Night Echo"},
-{name:"Monarch Butterfly",scientific:"Danaus plexippus",type:"bug",continent:"NorthAmerica",rarity:"common",atk:20,def:15,move:"Wing Drift"},
-{name:"Komodo Dragon",scientific:"Varanus komodoensis",type:"poison",continent:"Asia",rarity:"rare",atk:85,def:70,move:"Venom Bite"}
-
+{name:"Lesser Horseshoe Bat",scientific:"Rhinolophus hipposideros",type:["dark","flying"],continent:"Europe",rarity:"uncommon",atk:35,def:30,move:"Night Echo"},
+{name:"Monarch Butterfly",scientific:"Danaus plexippus",type:["bug","flying"],continent:"NorthAmerica",rarity:"common",atk:20,def:15,move:"Wing Drift"},
+{name:"Komodo Dragon",scientific:"Varanus komodoensis",type:["poison","fire"],continent:"Asia",rarity:"rare",atk:85,def:70,move:"Venom Bite"},
+{name:"Spotted Hyena",scientific:"Crocuta crocuta",type:["dark","fire"],continent:"Africa",rarity:"uncommon",atk:65,def:55,move:"Savage Hunt"},
+{name:"Tarantula",scientific:"Theraphosidae",type:["bug","poison"],continent:"SouthAmerica",rarity:"rare",atk:50,def:40,move:"Venom Strike"}
 ]
 
 const datalist=document.getElementById("animals")
-
 animals.forEach(a=>{
-let o=document.createElement("option")
-o.value=a.name
-datalist.appendChild(o)
+  let o=document.createElement("option")
+  o.value=a.name
+  datalist.appendChild(o)
 })
 
 let logged=[]
+
+// prevent duplicates
 function logAnimal(){
-
-let name=document.getElementById("animalInput").value
-
-let animal=animals.find(a=>a.name===name)
-
-if(!animal)return
-
-/* prevent duplicates */
-if(logged.find(a=>a.name===name)) return
-
-logged.push(animal)
-
-renderCollection()
-updateBadges()
+  let name=document.getElementById("animalInput").value
+  if(!name)return
+  let animal=animals.find(a=>a.name===name)
+  if(!animal) return
+  if(logged.some(a=>a.name===name)) return alert("Animal already logged")
+  logged.push(animal)
+  renderCollection()
+  updateBadges()
 }
 
-/* Wikipedia image */
-
+// Wikipedia image
 async function getImage(name){
-
-try{
-
-let url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`
-
-let res=await fetch(url)
-
-let data=await res.json()
-
-return data.thumbnail ? data.thumbnail.source : ""
-
-}catch{
-return ""
+  try{
+    let url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`
+    let res=await fetch(url)
+    let data=await res.json()
+    return data.thumbnail ? data.thumbnail.source : ""
+  }catch{return ""}
 }
 
-}
-
-/* render cards */
-
+// render cards
 async function renderCollection(){
-
-let area=document.getElementById("collection")
-
-area.innerHTML=""
-
-let search=document.getElementById("searchBox").value.toLowerCase()
-
-let filter=document.getElementById("filterElement").value
-
-for(let a of logged){
-
-if(search && !a.name.toLowerCase().includes(search))continue
-
-if(filter!="all" && !(Array.isArray(a.type) ? a.type.includes(filter) : a.type==filter)) continue
-
-let img=await getImage(a.name)
-
-let card=document.createElement("div")
-
-card.className=`card ${Array.isArray(a.type)?a.type.join(" "):a.type} ${a.rarity}`
-
-card.innerHTML=`
-
-<div class="card-header">
-<span>${a.name}</span>
-<span>HP ${a.atk+a.def}</span>
-</div>
-
-<div class="image-container">
-
-<img src="${img}" alt="${a.name}"
-onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-
-<div class="no-image">🖤</div>
-
-</div>
-
-<div class="card-body">
-
-<div class="card-overlay"></div>
-
-<div class="scientific">${a.scientific}</div>
-
-<div><b>${a.move}</b></div>
-
-<div class="stats">
-<span>ATK ${a.atk}</span>
-<span>DEF ${a.def}</span>
-</div>
-
-<div class="footer">
-<span>${Array.isArray(a.type) ? a.type.map(t=>typeIcons[t]).join(" ") : typeIcons[a.type]}</span>
-<span>${continentIcons[a.continent]}</span>
-</div>
-
-</div>
-`
-
-area.appendChild(card)
-
+  let area=document.getElementById("collection")
+  area.innerHTML=""
+  let search=document.getElementById("searchBox").value.toLowerCase()
+  let filter=document.getElementById("filterElement").value
+  for(let a of logged){
+    if(search && !a.name.toLowerCase().includes(search)) continue
+    if(filter!="all"){
+      if(Array.isArray(a.type)){
+        if(!a.type.includes(filter)) continue
+      }else if(a.type!=filter) continue
+    }
+    let img=await getImage(a.name)
+    let card=document.createElement("div")
+    // join dual types into classes
+    let typeClass=Array.isArray(a.type)?a.type.join(" "):a.type
+    card.className=`card ${typeClass} ${a.rarity}`
+    card.onclick=()=>openModal(a)
+    card.innerHTML=`
+    <div class="card-header">
+      <span>${a.name}</span>
+      <span>HP ${a.atk+a.def}</span>
+    </div>
+    <div class="image-container">
+      <img src="${img}" alt="${a.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="no-image">🖤</div>
+    </div>
+    <div class="card-body">
+      <div class="card-overlay"></div>
+      <div class="scientific">${a.scientific}</div>
+      <div><b>${a.move}</b></div>
+      <div class="stats">
+        <span>ATK ${a.atk}</span>
+        <span>DEF ${a.def}</span>
+      </div>
+      <div class="footer">
+        <span>${Array.isArray(a.type)?a.type.map(t=>typeIcons[t]).join(" "):typeIcons[a.type]}</span>
+        <span>${continentIcons[a.continent]}</span>
+      </div>
+    </div>`
+    area.appendChild(card)
+  }
 }
 
-}
-
-/* badges */
-
+// badges
 function updateBadges(){
+  let badgeArea=document.getElementById("badgeArea")
+  badgeArea.innerHTML=""
+  let continents=[...new Set(logged.map(a=>a.continent))]
+  let elements=[...new Set(logged.flatMap(a=>Array.isArray(a.type)?a.type:a.type))]
+  if(continents.length>=3) badgeArea.innerHTML+=`<div class="badge">🌍 Explorer Badge</div>`
+  if(elements.length>=3) badgeArea.innerHTML+=`<div class="badge">⚡ Elementalist Badge</div>`
+  if(logged.length>=5) badgeArea.innerHTML+=`<div class="badge">📘 Field Researcher</div>`
+}
 
-let badgeArea=document.getElementById("badgeArea")
-
-badgeArea.innerHTML=""
-
-let continents=[...new Set(logged.map(a=>a.continent))]
-let elements=[...new Set(logged.map(a=>a.type))]
-
-if(continents.length>=3)
-badgeArea.innerHTML+=`<div class="badge">🌍 Explorer Badge</div>`
-
-if(elements.length>=3)
-badgeArea.innerHTML+=`<div class="badge">⚡ Elementalist Badge</div>`
-
-if(logged.length>=5)
-badgeArea.innerHTML+=`<div class="badge">📘 Field Researcher</div>`
+// modal
+function openModal(animal){
+  let modal=prompt(`${animal.name} (${animal.scientific})\nMove: ${animal.move}\nATK: ${animal.atk}\nDEF: ${animal.def}\nRarity: ${animal.rarity}\n\nRelease this animal? (yes/no)`)
+  if(modal && modal.toLowerCase()=="yes"){
+    logged=logged.filter(a=>a.name!=animal.name)
+    renderCollection()
+    updateBadges()
+  }
 }
 
 function openPage(id){
-
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
-
-document.getElementById(id).classList.add("active")
-
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
-
-event.target.classList.add("active")
-
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"))
+  document.getElementById(id).classList.add("active")
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+  event.target.classList.add("active")
 }
 
 </script>
