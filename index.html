@@ -43,6 +43,7 @@ h1{margin-top:15px;}
   border:2px solid rgba(0,0,0,.2);
   transition:.2s;
   color:#111;
+  cursor:pointer;
 }
 .card:hover{transform:scale(1.03)}
 .card-header{
@@ -171,6 +172,51 @@ h1{margin-top:15px;}
 .controls{margin-top:10px;}
 .controls input, .controls select{padding:6px;margin:4px;}
 .badge{background:white;padding:10px;border-radius:10px;margin:10px auto;width:220px;border:2px solid #ccc;}
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+.modal-content{
+  background:white;
+  border-radius:12px;
+  padding:16px;
+  width:350px;
+  max-width:90%;
+  text-align:left;
+  position:relative;
+}
+.modal img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.modal-close{
+  position:absolute;
+  top:8px;
+  right:12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.modal-footer{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:10px;
+}
+.modal-footer button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  background:#ff5555;
+  color:white;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -212,39 +258,32 @@ h1{margin-top:15px;}
 <div id="badgeArea"></div>
 </div>
 
+<div id="modal" class="modal">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal()">✖</span>
+<div id="modalBody"></div>
+<div class="modal-footer">
+<button onclick="releaseAnimal()">Release Animal</button>
+</div>
+</div>
+</div>
+
 <script>
 const typeIcons={
-fire:"🔥",
-water:"💧",
-grass:"🌿",
-ice:"❄️",
-flying:"🕊️",
-dark:"🌙",
-poison:"☠️",
-bug:"🐛"
+fire:"🔥", water:"💧", grass:"🌿", ice:"❄️", flying:"🕊️",
+dark:"🌙", poison:"☠️", bug:"🐛"
 }
 const continentIcons={
-Africa:"🌍",
-Europe:"🌍",
-Asia:"🌏",
-NorthAmerica:"🌎",
-SouthAmerica:"🌎",
-Australia:"🦘",
-Antarctica:"🧊"
+Africa:"🌍", Europe:"🌍", Asia:"🌏", NorthAmerica:"🌎", SouthAmerica:"🌎", Australia:"🦘", Antarctica:"🧊"
 }
 
-// Animal database
 const animals=[
 {name:"African Lion",scientific:"Panthera leo",type:"fire",continent:"Africa",rarity:"rare",atk:80,def:70,move:"Flame Pounce"},
 {name:"Bald Eagle",scientific:"Haliaeetus leucocephalus",type:"flying",continent:"NorthAmerica",rarity:"uncommon",atk:60,def:50,move:"Sky Dive"},
 {name:"Polar Bear",scientific:"Ursus maritimus",type:"ice",continent:"Antarctica",rarity:"rare",atk:75,def:80,move:"Frozen Swipe"},
 {name:"Poison Dart Frog",scientific:"Dendrobatidae",type:"poison",continent:"SouthAmerica",rarity:"uncommon",atk:40,def:30,move:"Toxic Jump"},
 {name:"Blue Whale",scientific:"Balaenoptera musculus",type:"water",continent:"Asia",rarity:"legendary",atk:90,def:90,move:"Ocean Surge"},
-{name:"Lesser Horseshoe Bat",scientific:"Rhinolophus hipposideros",type:["dark","flying"],continent:"Europe",rarity:"uncommon",atk:35,def:30,move:"Night Echo"},
-{name:"Monarch Butterfly",scientific:"Danaus plexippus",type:["bug","flying"],continent:"NorthAmerica",rarity:"common",atk:20,def:15,move:"Wing Drift"},
-{name:"Komodo Dragon",scientific:"Varanus komodoensis",type:["poison","fire"],continent:"Asia",rarity:"rare",atk:85,def:70,move:"Venom Bite"},
-{name:"Spotted Hyena",scientific:"Crocuta crocuta",type:["dark","fire"],continent:"Africa",rarity:"uncommon",atk:65,def:55,move:"Savage Hunt"},
-{name:"Tarantula",scientific:"Theraphosidae",type:["bug","poison"],continent:"SouthAmerica",rarity:"rare",atk:50,def:40,move:"Venom Strike"}
+{name:"Lesser Horseshoe Bat",scientific:"Rhinolophus hipposideros",type:["dark","flying"],continent:"Europe",rarity:"uncommon",atk:35,def:30,move:"Night Echo"}
 ]
 
 const datalist=document.getElementById("animals")
@@ -255,20 +294,20 @@ animals.forEach(a=>{
 })
 
 let logged=[]
+let currentAnimal=null
 
-// prevent duplicates
 function logAnimal(){
   let name=document.getElementById("animalInput").value
-  if(!name)return
+  if(!name) return
   let animal=animals.find(a=>a.name===name)
   if(!animal) return
   if(logged.some(a=>a.name===name)) return alert("Animal already logged")
   logged.push(animal)
   renderCollection()
   updateBadges()
+  document.getElementById("animalInput").value=""
 }
 
-// Wikipedia image
 async function getImage(name){
   try{
     let url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`
@@ -278,7 +317,6 @@ async function getImage(name){
   }catch{return ""}
 }
 
-// render cards
 async function renderCollection(){
   let area=document.getElementById("collection")
   area.innerHTML=""
@@ -289,41 +327,39 @@ async function renderCollection(){
     if(filter!="all"){
       if(Array.isArray(a.type)){
         if(!a.type.includes(filter)) continue
-      }else if(a.type!=filter) continue
+      } else if(a.type!=filter) continue
     }
     let img=await getImage(a.name)
     let card=document.createElement("div")
-    // join dual types into classes
     let typeClass=Array.isArray(a.type)?a.type.join(" "):a.type
     card.className=`card ${typeClass} ${a.rarity}`
     card.onclick=()=>openModal(a)
     card.innerHTML=`
-    <div class="card-header">
-      <span>${a.name}</span>
-      <span>HP ${a.atk+a.def}</span>
-    </div>
-    <div class="image-container">
-      <img src="${img}" alt="${a.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-      <div class="no-image">🖤</div>
-    </div>
-    <div class="card-body">
-      <div class="card-overlay"></div>
-      <div class="scientific">${a.scientific}</div>
-      <div><b>${a.move}</b></div>
-      <div class="stats">
-        <span>ATK ${a.atk}</span>
-        <span>DEF ${a.def}</span>
+      <div class="card-header">
+        <span>${a.name}</span>
+        <span>HP ${a.atk+a.def}</span>
       </div>
-      <div class="footer">
-        <span>${Array.isArray(a.type)?a.type.map(t=>typeIcons[t]).join(" "):typeIcons[a.type]}</span>
-        <span>${continentIcons[a.continent]}</span>
+      <div class="image-container">
+        <img src="${img}" alt="${a.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="no-image">🖤</div>
       </div>
-    </div>`
+      <div class="card-body">
+        <div class="card-overlay"></div>
+        <div class="scientific">${a.scientific}</div>
+        <div><b>${a.move}</b></div>
+        <div class="stats">
+          <span>ATK ${a.atk}</span>
+          <span>DEF ${a.def}</span>
+        </div>
+        <div class="footer">
+          <span>${Array.isArray(a.type)?a.type.map(t=>typeIcons[t]).join(" "):typeIcons[a.type]}</span>
+          <span>${continentIcons[a.continent]}</span>
+        </div>
+      </div>`
     area.appendChild(card)
   }
 }
 
-// badges
 function updateBadges(){
   let badgeArea=document.getElementById("badgeArea")
   badgeArea.innerHTML=""
@@ -334,13 +370,34 @@ function updateBadges(){
   if(logged.length>=5) badgeArea.innerHTML+=`<div class="badge">📘 Field Researcher</div>`
 }
 
-// modal
-function openModal(animal){
-  let modal=prompt(`${animal.name} (${animal.scientific})\nMove: ${animal.move}\nATK: ${animal.atk}\nDEF: ${animal.def}\nRarity: ${animal.rarity}\n\nRelease this animal? (yes/no)`)
-  if(modal && modal.toLowerCase()=="yes"){
-    logged=logged.filter(a=>a.name!=animal.name)
+// Modal
+const modal=document.getElementById("modal")
+const modalBody=document.getElementById("modalBody")
+function openModal(a){
+  currentAnimal=a
+  getImage(a.name).then(img=>{
+    modalBody.innerHTML=`
+      <img src="${img}" onerror="this.style.display='none'">
+      <h3>${a.name}</h3>
+      <p><i>${a.scientific}</i></p>
+      <p><b>Move:</b> ${a.move}</p>
+      <p><b>ATK:</b> ${a.atk}</p>
+      <p><b>DEF:</b> ${a.def}</p>
+      <p><b>HP:</b> ${a.atk+a.def}</p>
+      <p><b>Type:</b> ${Array.isArray(a.type)?a.type.map(t=>typeIcons[t]).join(" "):typeIcons[a.type]}</p>
+      <p><b>Continent:</b> ${continentIcons[a.continent]}</p>
+      <p><b>Rarity:</b> ${a.rarity}</p>
+    `
+    modal.style.display="flex"
+  })
+}
+function closeModal(){ modal.style.display="none" }
+function releaseAnimal(){
+  if(currentAnimal){
+    logged=logged.filter(a=>a.name!=currentAnimal.name)
     renderCollection()
     updateBadges()
+    closeModal()
   }
 }
 
@@ -352,6 +409,5 @@ function openPage(id){
 }
 
 </script>
-
 </body>
 </html>
