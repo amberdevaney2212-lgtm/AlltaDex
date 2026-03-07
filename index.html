@@ -555,26 +555,26 @@ function updateBadges() {
   const legendaryCount = logged.filter(a => a.rarity === "legendary").length;
 
   // Continent Badges
-  if (continents.length >= 5) badgeArea.innerHTML += `<div class="badge">🌏 World Explorer</div>`;
-  else if (continents.length >= 3) badgeArea.innerHTML += `<div class="badge">🌍 Explorer Badge</div>`;
+  if (continents.length >= 5) badgeArea.innerHTML += `<div class="badge" title="Collected animals from 5+ continents!">🌏 World Explorer</div>`;
+  else if (continents.length >= 3) badgeArea.innerHTML += `<div class="badge" title="Collected animals from 3+ continents. ${5 - continents.length} more to World Explorer!">🌍 Explorer Badge</div>`;
 
   // Element Badges
-  if (elements.length >= 6) badgeArea.innerHTML += `<div class="badge">⚡ Element Master</div>`;
-  else if (elements.length >= 3) badgeArea.innerHTML += `<div class="badge">⚡ Elementalist Badge</div>`;
+  if (elements.length >= 6) badgeArea.innerHTML += `<div class="badge" title="Caught 6+ elements!">⚡ Element Master</div>`;
+  else if (elements.length >= 3) badgeArea.innerHTML += `<div class="badge" title="Caught 3+ elements. ${6 - elements.length} more to Element Master!">⚡ Elementalist Badge</div>`;
 
   // Logged Animals Count
-  if (logged.length >= 10) badgeArea.innerHTML += `<div class="badge">📘 Field Researcher</div>`;
-  else if (logged.length >= 5) badgeArea.innerHTML += `<div class="badge">📖 Junior Researcher</div>`;
+  if (logged.length >= 10) badgeArea.innerHTML += `<div class="badge" title="Logged 10+ animals!">📘 Field Researcher</div>`;
+  else if (logged.length >= 5) badgeArea.innerHTML += `<div class="badge" title="Logged 5+ animals. ${10 - logged.length} more to Field Researcher!">📖 Junior Researcher</div>`;
 
   // Rare/Legendary Collector
-  if (rareCount >= 5) badgeArea.innerHTML += `<div class="badge">💎 Elite Collector</div>`;
-  else if (rareCount >= 3) badgeArea.innerHTML += `<div class="badge">💎 Collector Badge</div>`;
+  if (rareCount >= 5) badgeArea.innerHTML += `<div class="badge" title="Collected 5+ rare or legendary animals!">💎 Elite Collector</div>`;
+  else if (rareCount >= 3) badgeArea.innerHTML += `<div class="badge" title="Collected 3+ rare or legendary animals. ${5 - rareCount} more to Elite Collector!">💎 Collector Badge</div>`;
 
   // Dual-Type Explorer
-  if (dualTypes >= 3) badgeArea.innerHTML += `<div class="badge">🔗 Dual-Type Explorer</div>`;
+  if (dualTypes >= 3) badgeArea.innerHTML += `<div class="badge" title="Caught 3+ dual-type animals!">🔗 Dual-Type Explorer</div>`;
 
   // Legendary Hunter
-  if (legendaryCount >= 1) badgeArea.innerHTML += `<div class="badge">🌟 Legendary Hunter</div>`;
+  if (legendaryCount >= 1) badgeArea.innerHTML += `<div class="badge" title="Caught ${legendaryCount} legendary animal(s)!">🌟 Legendary Hunter</div>`;
 }
 
 function openPage(id){
