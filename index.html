@@ -463,7 +463,11 @@ function logAnimal(){
   let name=document.getElementById("animalInput").value;
   let animal=animals.find(a=>a.name===name);
   if(!animal || logged.some(l=>l.name===name)) return; // prevent duplicates
+
   logged.push(animal);
+
+  document.getElementById("animalInput").value="";  // clear the input box
+
   renderCollection();
   updateBadges();
 }
