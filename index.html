@@ -171,7 +171,7 @@ h1{margin-top:15px;}
   overflow: hidden;
 }
 
-/* Overlay holds all fire effects */
+/* Overlay holds flames + embers + shimmer */
 .card-overlay{
   position: absolute;
   inset: 0;
@@ -181,11 +181,9 @@ h1{margin-top:15px;}
 /* Ember layer with fade */
 .card.fire .card-overlay{
   background:
-    /* closer to base = brighter */
     radial-gradient(circle at 20% 85%, rgba(255,200,120,.35) 1px, transparent 4px),
     radial-gradient(circle at 70% 75%, rgba(255,160,80,.25) 1px, transparent 4px),
     radial-gradient(circle at 40% 90%, rgba(255,180,120,.2) 1px, transparent 4px);
-    
   background-size: 120px 120px;
   animation: embersFade 6s linear infinite;
 }
@@ -219,6 +217,17 @@ h1{margin-top:15px;}
   animation: fireFlicker 2s ease-in-out infinite alternate;
 }
 
+/* Heat shimmer layer (pseudo-element) */
+.card.fire .card-overlay::nth-child(3){
+  content:"";
+  position:absolute;
+  inset:-30%;
+  background:
+    linear-gradient(to top, rgba(255,255,255,0.08), transparent 60%);
+  filter: blur(15px);
+  animation: heatShimmer 2s ease-in-out infinite alternate;
+}
+
 /* Ember movement + vertical fade */
 @keyframes embersFade{
   0%{background-position:0 0,0 0,0 0; opacity:1;}
@@ -237,6 +246,13 @@ h1{margin-top:15px;}
   0%{transform:translateY(0) scale(1);opacity:.7;}
   100%{transform:translateY(-15px) scale(1.05);opacity:.9;}
 }
+
+/* Heat shimmer motion */
+@keyframes heatShimmer{
+  0%{transform: translateX(0) translateY(0) skewX(0deg);}
+  50%{transform: translateX(5px) translateY(-5px) skewX(2deg);}
+  100%{transform: translateX(-5px) translateY(-10px) skewX(-2deg);}
+}
 /* Water */
 .card.water .card-overlay{
   background:
@@ -253,10 +269,10 @@ h1{margin-top:15px;}
     radial-gradient(circle at 70% 60%, rgba(255,255,200,.15) 1px, transparent 3px),
 
     /* soft leaf lighting */
-    radial-gradient(circle at 40% 70%, rgba(120,220,120,.18), transparent 60%),
+    radial-gradient(circle at 40% 70%, rgba(120,220,120,.18), transparent 90%),
 
     /* base plant glow */
-    radial-gradient(circle at center, rgba(40,160,60,.12), transparent 70%);
+    radial-gradient(circle at center, rgba(40,160,60,.12), transparent 80%);
 
   background-size: 120px 120px, 140px 140px, cover, cover;
 
