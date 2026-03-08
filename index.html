@@ -272,8 +272,11 @@ background-position: 0 0, 10px 10px;
 /* Dark */
 .card.dark .card-overlay{
   background:
-    radial-gradient(circle, rgba(0,0,0,.15), transparent 70%);
-  animation:darkParticles 5s linear infinite;
+    radial-gradient(circle at center,
+      rgba(255,255,255,0.05) 0%,
+      rgba(40,50,90,0.15) 50%,
+      rgba(10,10,25,0.35) 100%);
+  animation: darkParticles 5s linear infinite;
 }
 .card.electric .card-overlay{
   background:
